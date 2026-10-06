@@ -1,6 +1,6 @@
 # Releasing
 
-这是人工维护的轻量发布流程，没有自动发布凭据。当前源码版本 0.1.3，尚未创建 GitHub Release，也没有 npm 发布。发布 npm 是单独操作，需另行明确授权；执行下面的本地检查不会发布包。
+这是人工维护的轻量发布流程，没有自动发布凭据。当前源码版本为 0.1.3，安装包入口为 [v0.1.3 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.3)，尚未发布 npm。发布 npm 是单独操作，需另行明确授权；执行下面的本地检查不会发布包。
 
 ## Local preparation
 
@@ -41,6 +41,6 @@ GitHub Actions 已实际运行；[历史整理后 main 的工作流](https://git
 
 ## Tag and Release — authorization required
 
-首次公开 Release 可以采用源码当前版本 `v0.1.3`，无需回退到 0.1.0。通过所有检查、得到发布授权后，创建 tag 和 GitHub Release，上传预编译 `.tgz` 和 SHA-256 文件。发布说明草稿见 [RELEASE_NOTES.md](RELEASE_NOTES.md)；发布后同步 README 的安装状态和 CHANGELOG。
+首次公开 Release 为 `v0.1.3`。后续发版通过所有检查、得到发布授权后，创建与版本号对应的 tag 和 GitHub Release，上传预编译 `.tgz` 和 SHA-256 文件。发布说明格式见 [RELEASE_NOTES.md](RELEASE_NOTES.md)。先以 draft 上传并核对附件，再公开发布；不要在安装包缺失时提前公开 Release。源码 tag、构建产物和校验文件必须对应同一次构建，同步 README 的安装状态和 CHANGELOG。
 
 不自动执行 npm publish，不创建 npm token，不引入自动发布 workflow。如未来单独授权 npm 发布，发布前再次确认包名占用、账号和授权范围，并复核干净构建、测试及 tarball；不能仅依据本次包名检查结果。

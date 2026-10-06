@@ -1,23 +1,24 @@
 # Changelog
 
-采用 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 的分组方式和 [Semantic Versioning](https://semver.org/)。以下 0.1.x 是本地开发版本记录，不表示它们已在 GitHub/npm 发布；本轮没有增加版本号。
+采用 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 的分组方式和 [Semantic Versioning](https://semver.org/)。0.1.3 是首次 GitHub Release；更早的版本为本地开发记录，未公开发行。尚未发布 npm 包。
 
 ## [Unreleased]
 
+暂无待发布条目。
+
+## [0.1.3] - 2026-10-06
+
 ### Added
 
+- 首次 GitHub Release 的预编译 `.tgz` 安装包及 SHA-256 校验文件。
 - 贡献指南、安全报告流程、Contributor Covenant、Issue/PR 表单、Dependabot 和发布流程文档。
 - 两套支持的 Harness SDK 锁文件及只读、默认离线的 CI 检查。
 
 ### Changed
 
-- README 面向用户重排，纠正尚未发布的安装说明，移除开发机路径。
+- README 面向用户重排，提供 Release 下载与实际桌面安装步骤，移除开发机路径。
 - 补全真实 GitHub package metadata，收紧发行文件白名单和忽略规则。
 - 开发测试依赖 Vitest 升级到 4.1.11，修复 audit 中 mocker/tinypool 开发依赖告警；Harness 和运行协议保持原版本。
-
-## [0.1.3]
-
-### Changed
 
 - 单次工具调用支持跨午夜出发窗口，内部顺序查询乘车日和次日，统一按出发日期/时间排序后限制结果数量。
 - 到达筛选改为真实日期与时间比较，支持中国当地 YYYY-MM-DDTHH:mm；两个 HH:mm 的晚到早窗口自动跨到次日。

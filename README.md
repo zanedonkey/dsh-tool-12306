@@ -11,7 +11,7 @@ Native China Railway 12306 query tools for DeepSeek Harness.
 
 本项目不是 MCP Server，也不是自动购票或抢票工具。本项目为非官方开源项目，与中国铁路及 12306 官方无隶属或合作关系。
 
-当前版本为 **0.1.3**。本仓库提供源码；**尚无 GitHub Release，也未发布 npm 包**。目前请按下面的源码构建流程生成预编译安装包。
+当前版本为 **0.1.3**。预编译安装包通过 [GitHub Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.3) 提供；尚未发布 npm 包。
 
 ## Features
 
@@ -37,6 +37,15 @@ Native China Railway 12306 query tools for DeepSeek Harness.
 
 ## Installation
 
+### 下载预编译安装包
+
+从 [v0.1.3 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.3) 下载：
+
+- [dsh-tool-12306-0.1.3.tgz](https://github.com/zanedonkey/dsh-tool-12306/releases/download/v0.1.3/dsh-tool-12306-0.1.3.tgz)
+- [SHA-256 校验文件](https://github.com/zanedonkey/dsh-tool-12306/releases/download/v0.1.3/dsh-tool-12306-0.1.3.tgz.sha256)
+
+对照校验文件核对安装包的 SHA-256。桌面端打开“插件 → 添加插件”，输入下载的 `.tgz` 文件的本地完整路径，安装后点击“立即启用”。已安装旧版时，先卸载旧版，再安装新包。CLI 安装命令见下文。
+
 ### 从源码生成安装包
 
 使用已验证范围内的 Node.js：
@@ -50,7 +59,7 @@ npm test
 npm pack
 ```
 
-这会生成 `dsh-tool-12306-0.1.3.tgz`，包含编译后的 ESM 和 TypeScript 声明文件。桌面端：在 DeepSeek Harness 的插件安装页面选择此 `.tgz`。若已安装旧版，先卸载旧版，再安装新包；不要启用不兼容版本豁免。
+这会生成 `dsh-tool-12306-0.1.3.tgz`，包含编译后的 ESM 和 TypeScript 声明文件。桌面端按上面的本地路径方式安装；不要启用不兼容版本豁免。
 
 CLI：在安装包所在目录，用已经安装的兼容版本 `dsh` 执行：
 
@@ -62,7 +71,7 @@ dsh --profile rail web
 
 安装流程参考 [Harness 官方 bundle 文档](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md)，使用本项目真实的 `dsh.bundle.patch`。桌面端与 CLI 的安装和 profile 独立，更新全局 CLI 不会更新桌面端插件。
 
-目前不要运行 `npm install dsh-tool-12306` 或直接从 GitHub 安装插件：npm 尚未发布，Git 安装也没有自动编译的 `prepare` 脚本。应先生成上述预编译 `.tgz`。未来发布安装包时会放到 [GitHub Releases](https://github.com/zanedonkey/dsh-tool-12306/releases)。
+目前不要运行 `npm install dsh-tool-12306` 或直接从 GitHub 安装插件：npm 尚未发布，Git 安装也没有自动编译的 `prepare` 脚本。请使用 Release 的预编译 `.tgz`，或者按上面的源码流程构建。
 
 ## DeepSeek Harness Configuration
 
