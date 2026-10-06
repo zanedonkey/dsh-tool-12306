@@ -1,0 +1,29 @@
+name: Feature request
+description: Propose a small improvement within anonymous railway queries.
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: "Scope: query tools only. Ticket grabbing, account automation, CAPTCHA bypass and evading upstream security controls are not default project goals. Do not include credentials or personal information."
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Example use case
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative solutions

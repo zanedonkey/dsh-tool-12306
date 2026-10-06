@@ -1,0 +1,58 @@
+name: Bug report
+description: Report a reproducible query or plugin problem with sanitized data.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: "Do not include cookies, account credentials, tokens, personal information, or raw request headers. Report sensitive vulnerabilities privately using SECURITY.md."
+  - type: input
+    id: plugin-version
+    attributes:
+      label: dsh-tool-12306 version
+    validations:
+      required: true
+  - type: input
+    id: harness-version
+    attributes:
+      label: DeepSeek Harness version
+      description: Include Desktop or CLI and the exact version.
+    validations:
+      required: true
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js version
+      description: Output of node --version, or unknown for an embedded Desktop runtime.
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include minimal sanitized parameters and relevant configuration.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs
+      description: Remove cookies, credentials, tokens, local usernames and private travel details before posting.
+      render: text

@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security reporting guidance
+    url: https://github.com/zanedonkey/dsh-tool-12306/security/policy
+    about: Read SECURITY.md first. Do not disclose sensitive vulnerabilities publicly.
