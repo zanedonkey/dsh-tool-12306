@@ -22,7 +22,11 @@ Native China Railway 12306 query tools for DeepSeek Harness. 首次公开发布�
 
 本项目非官方查询插件；不提供登录、购票、抢票、验证码绕过或支付。依赖上游公开可访问接口行为，可能因维护、预售期、运行图变化和限流不可用。城市代表站查询不穷举全部站点组合，中转为有限分页，余票只是请求时快照。
 
-0.1.3 的到达 HH:mm 以乘车 date 为锚点；次日凌晨筛选需明确日期时间，详见 TIME_WINDOWS.md。在线模型自然语言理解未作为脚本测试的已验证结论；实际发版应引用真实 CI 结果，不声称不存在的 coverage。
+0.1.3 的到达 HH:mm 以乘车 date 为锚点；次日凌晨筛选需明确日期时间，详见 [TIME_WINDOWS.md](TIME_WINDOWS.md)。在线模型自然语言理解未作为脚本测试的已验证结论；实际发版应引用该提交的真实 CI 结果，不声称不存在的 coverage。
+
+## Candidate validation
+
+全新 GitHub clone 通过构建、lint 和 113 项离线测试；候选 tarball 已分别通过官方 DSH 0.2.0-rc.2 / 0.2.1-alpha.1 CLI 安装、三个原生工具调用、跨午夜日期筛选及卸载验收。详情与 SHA-256 见 [RELEASE_CANDIDATE.md](RELEASE_CANDIDATE.md)。没有版本豁免，桌面界面操作与在线模型理解仍待人工验证。
 
 ## Acknowledgements
 

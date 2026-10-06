@@ -45,4 +45,6 @@
 
 真实 LLM 的自然语言理解和自动参数选择尚未在线验收：工作区没有为本任务提供已配置的 Harness 模型凭证。固定脚本 Agent 测试仅证明原生调度链路；真实官方 HTTP 集成测试单独证明数据查询。不要将二者合称为“真实模型端到端已通过”。配置可用模型的 Harness profile 后，用 README 中四条自然语言示例完成该项。
 
-城市查询使用官方代表站语义，不做全部车站组合穷举。中转仅两程，分页达到上限时明确返回 truncated。官网未来运行图、维护或接口变更仍可能影响结果。npm 包与 GitHub 仓库尚未公开发布，GitHub Actions 配置尚未在云端运行。
+城市查询使用官方代表站语义，不做全部车站组合穷举。中转仅两程，分页达到上限时明确返回 truncated。官网未来运行图、维护或接口变更仍可能影响结果。
+
+上述 0.1.0 验证是开发历史。当前源码为 0.1.3，已公开上传到 [GitHub](https://github.com/zanedonkey/dsh-tool-12306)，[main 的云端 CI](https://github.com/zanedonkey/dsh-tool-12306/actions/runs/37433469955) 共 8 个任务通过，每个环境通过 113 项离线测试。GitHub Release 和 npm 发布尚未执行。当前候选安装包的独立安装验收见 [RELEASE_CANDIDATE.md](RELEASE_CANDIDATE.md)。

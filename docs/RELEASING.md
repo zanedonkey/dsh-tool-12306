@@ -29,13 +29,13 @@ npm pack
 
 检查 tarball，并在独立消费环境验证真实 Harness Loader、三个工具和卸载。计算 SHA-256，生成与文件名匹配的校验文件。已有同版本旧安装包不可直接混用：文档/依赖调整后应重新打包并更新校验值。
 
-5. 检查 git status、git diff；当前本地仓库没有提交历史且没有 remote，普通 git diff 无法展示 untracked 文件。提交前审查所有准备纳入的文件，使用 GitHub noreply 邮箱避免公开私人邮箱。建议提交说明 `chore: prepare repository for open source release`。
+5. 检查 git status、git diff 和提交历史。源码已上传到 origin/main；后续修改使用正常提交，保持现有历史。检查新增文件和提交邮箱，继续使用 GitHub noreply 邮箱。发布候选的安装验收记录见 [RELEASE_CANDIDATE.md](RELEASE_CANDIDATE.md)。
 
 ## GitHub publication — authorization required
 
-仓库已存在：`zanedonkey/dsh-tool-12306`，远端默认分支 main，目前只有初始化 README。**不要把本地无父提交的 master 强推覆盖远端**；发布时先取回 main，在临时 checkout/分支上加入已审查的文件，正常提交并推送。设置本地 remote 与提交源码需由维护者在确认发布后执行，不在本轮自动操作。
+源码仓库：[zanedonkey/dsh-tool-12306](https://github.com/zanedonkey/dsh-tool-12306)，默认分支 main，已配置 origin 并上传源码。源码上传与创建 Release 是不同操作；后续源码更新正常提交并推送，创建 tag/Release 和 npm 发布仍需各自的明确授权。不要强推覆盖历史，除非维护者明确授权处理历史问题。
 
-上传源码后，等 GitHub Actions 的两套 SDK、Node 22/24 和两种 OS 检查完成。CI 的本地模拟通过不代表云端检查已经通过。只有工作流真正存在并运行后才添加真实 CI 状态 badge。
+GitHub Actions 已实际运行；[历史整理后 main 的工作流](https://github.com/zanedonkey/dsh-tool-12306/actions/runs/37433469955) 的两套 SDK、Node 22/24 和两种 OS 共 8 个任务通过。每次更新源码后仍需检查该提交自己的 CI；不要把历史成功结果当成后续提交的保证。
 
 建议由仓库所有者手动确认：Issues 可用、private vulnerability reporting 已启用，并检查 Security 页确实有 Report a vulnerability；可选开启 require PR/CI、禁止 force push 和分支删除。Description 建议 `Native China Railway 12306 query tools for DeepSeek Harness.`，Topics 建议 deepseek、deepseek-harness、12306、china-railway、typescript、ai-agent、tool-plugin。本轮只提出建议，不改远程设置。
 
