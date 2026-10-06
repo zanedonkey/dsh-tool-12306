@@ -1,0 +1,51 @@
+{
+  "status": true,
+  "data": {
+    "can_query": "N",
+    "result_index": 1,
+    "middleList": [
+      {
+        "train_date": "2026-10-07",
+        "middle_date": "2026-10-08",
+        "all_lishi_minutes": 1790,
+        "wait_time_minutes": 180,
+        "middle_station_name": "西安",
+        "same_station": "0",
+        "fullList": [
+          {
+            "train_no": "test-G88",
+            "station_train_code": "G88",
+            "from_station_name": "深圳北",
+            "to_station_name": "西安北",
+            "from_station_telecode": "IOQ",
+            "to_station_telecode": "EAY",
+            "start_time": "16:00",
+            "arrive_time": "23:50",
+            "lishi": "07:50",
+            "ze_num": "有",
+            "zy_num": "无",
+            "swz_num": "--",
+            "wz_num": "无",
+            "yp_info": ""
+          },
+          {
+            "train_no": "test-Z99",
+            "station_train_code": "Z99",
+            "from_station_name": "西安",
+            "to_station_name": "拉萨",
+            "from_station_telecode": "XAY",
+            "to_station_telecode": "LSO",
+            "start_time": "02:50",
+            "arrive_time": "21:50",
+            "lishi": "19:00",
+            "ze_num": "有",
+            "zy_num": "无",
+            "swz_num": "--",
+            "wz_num": "无",
+            "yp_info": ""
+          }
+        ]
+      }
+    ]
+  }
+}
