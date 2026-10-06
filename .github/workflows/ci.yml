@@ -1,0 +1,32 @@
+name: Build and offline tests
+on: [push, pull_request]
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [22, 24]
+        harness: [0.2.0-rc.2, 0.2.1-alpha.1]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            .github/locks/package-lock.*.json
+      - run: node scripts/select-test-harness.mjs ${{ matrix.harness }}
+      - run: npm ci --registry=https://registry.npmjs.org
+      - run: npm run build
+      - run: npm run lint
+      - run: npm test
+      - run: npm pack --dry-run
