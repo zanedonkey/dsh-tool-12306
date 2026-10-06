@@ -1,6 +1,6 @@
 # Changelog
 
-采用 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 的分组方式和 [Semantic Versioning](https://semver.org/)。0.1.3 是首次 GitHub Release；更早的版本为本地开发记录，未公开发行。尚未发布 npm 包。
+采用 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 的分组方式和 [Semantic Versioning](https://semver.org/)。0.1.3 是首次 GitHub Release 和 npm 发布；更早的版本为本地开发记录，未公开发行。
 
 ## [Unreleased]
 
@@ -11,6 +11,7 @@
 ### Added
 
 - 首次 GitHub Release 的预编译 `.tgz` 安装包及 SHA-256 校验文件。
+- 首次发布 [npm 包 dsh-tool-12306@0.1.3](https://www.npmjs.com/package/dsh-tool-12306)，支持按包名安装到 Harness profile。
 - 贡献指南、安全报告流程、Contributor Covenant、Issue/PR 表单、Dependabot 和发布流程文档。
 - 两套支持的 Harness SDK 锁文件及只读、默认离线的 CI 检查。
 

@@ -10,7 +10,8 @@ Native China Railway 12306 query tools for DeepSeek Harness. 首次公开发布�
 
 - 在 DeepSeek Harness 桌面端“插件 → 添加插件”输入下载包的本地完整路径，安装后立即启用。升级时先卸载旧版再安装。
 - CLI 在包所在目录执行 `dsh plugin --profile rail add ./dsh-tool-12306-0.1.3.tgz`。
-- 需要 Node.js 22.19+ 或 24+；支持 DSH 0.2.0-rc.2 / 0.2.1-alpha.1。尚未发布 npm。
+- 也可从 npm 安装：桌面端输入 `dsh-tool-12306@0.1.3`，或执行 `dsh plugin --profile rail add dsh-tool-12306@0.1.3`。
+- 需要 Node.js 22.19+ 或 24+；支持 DSH 0.2.0-rc.2 / 0.2.1-alpha.1。
 
 ## Available Tools
 

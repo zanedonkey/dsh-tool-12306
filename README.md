@@ -13,7 +13,7 @@ Native China Railway 12306 query tools for DeepSeek Harness.
 
 本项目不是 MCP Server，也不是自动购票或抢票工具。本项目为非官方开源项目，与中国铁路及 12306 官方无隶属或合作关系。
 
-当前版本为 **0.1.3**。预编译安装包通过 [GitHub Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.3) 提供；尚未发布 npm 包。
+当前版本为 **0.1.3**。预编译安装包通过 [GitHub Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.3) 提供；也可从 [npm](https://www.npmjs.com/package/dsh-tool-12306) 安装。
 
 ## Features
 
@@ -38,6 +38,20 @@ Native China Railway 12306 query tools for DeepSeek Harness.
 自然语言使用需要宿主已配置可用模型。Harness preview 版本变化较快，插件只声明上述两套已验证 SDK 的兼容范围，升级宿主后需重新验证；见 [兼容性记录](docs/COMPATIBILITY.md)。
 
 ## Installation
+
+### 从 npm 安装
+
+桌面端打开“插件 → 添加插件”，输入 `dsh-tool-12306@0.1.3`，安装后点击“立即启用”。
+
+CLI 使用已安装的兼容版本 `dsh`：
+
+```sh
+dsh plugin --profile rail add dsh-tool-12306@0.1.3
+dsh --profile rail --dump-config
+dsh --profile rail web
+```
+
+如果只需要把包作为 Node.js 项目依赖安装，可以执行 `npm install dsh-tool-12306@0.1.3`；在 Harness 中启用工具请使用上面的插件安装流程。
 
 ### 下载预编译安装包
 
@@ -73,7 +87,7 @@ dsh --profile rail web
 
 安装流程参考 [Harness 官方 bundle 文档](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md)，使用本项目真实的 `dsh.bundle.patch`。桌面端与 CLI 的安装和 profile 独立，更新全局 CLI 不会更新桌面端插件。
 
-目前不要运行 `npm install dsh-tool-12306` 或直接从 GitHub 安装插件：npm 尚未发布，Git 安装也没有自动编译的 `prepare` 脚本。请使用 Release 的预编译 `.tgz`，或者按上面的源码流程构建。
+直接从 GitHub 安装源码没有自动编译的 `prepare` 脚本。请使用 npm 包或 Release 的预编译 `.tgz`，或者按上面的源码流程构建。
 
 ## DeepSeek Harness Configuration
 

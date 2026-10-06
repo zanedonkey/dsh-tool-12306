@@ -1,6 +1,6 @@
 # Releasing
 
-这是人工维护的轻量发布流程，没有自动发布凭据。当前源码版本为 0.1.3，安装包入口为 [v0.1.3 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.3)，尚未发布 npm。发布 npm 是单独操作，需另行明确授权；执行下面的本地检查不会发布包。
+这是人工维护的轻量发布流程，没有自动发布凭据。当前版本为 0.1.3，可通过 [npm](https://www.npmjs.com/package/dsh-tool-12306) 或 [v0.1.3 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.3) 安装。后续每次发布仍需明确授权；执行下面的本地检查不会发布包。
 
 ## Local preparation
 
@@ -43,4 +43,16 @@ GitHub Actions 已实际运行；[历史整理后 main 的工作流](https://git
 
 首次公开 Release 为 `v0.1.3`。后续发版通过所有检查、得到发布授权后，创建与版本号对应的 tag 和 GitHub Release，上传预编译 `.tgz` 和 SHA-256 文件。发布说明格式见 [RELEASE_NOTES.md](RELEASE_NOTES.md)。先以 draft 上传并核对附件，再公开发布；不要在安装包缺失时提前公开 Release。源码 tag、构建产物和校验文件必须对应同一次构建，同步 README 的安装状态和 CHANGELOG。
 
-不自动执行 npm publish，不创建 npm token，不引入自动发布 workflow。如未来单独授权 npm 发布，发布前再次确认包名占用、账号和授权范围，并复核干净构建、测试及 tarball；不能仅依据本次包名检查结果。
+## npm publication — authorization required
+
+0.1.3 已由维护者授权手工发布到 npm，`latest` 指向 0.1.3，验证记录见 [NPM_RELEASE_ACCEPTANCE.md](NPM_RELEASE_ACCEPTANCE.md)。npm 包的编译文件与 GitHub Release 相同，README 和上游署名更新后分别打包，因此两个渠道的归档校验值不同；不要用 GitHub 的 SHA-256 校验文件核对 npm tarball，也不要覆盖已有 Release 附件。
+
+后续发布前再次确认包名、当前账号、版本是否已占用及授权范围，完成干净构建、测试和 tarball 检查，并同步包内的安装说明。登录账号需满足 npm 的 2FA 发布要求；发布验证由维护者在 npm 官方页面完成，勿在 Issue、日志或仓库中记录验证码、恢复码和凭据。
+
+```sh
+npm whoami --registry=https://registry.npmjs.org
+npm publish ./dsh-tool-12306-<version>.tgz --access public --tag latest --registry=https://registry.npmjs.org
+npm view dsh-tool-12306 version dist-tags dist.integrity --json --registry=https://registry.npmjs.org
+```
+
+发布后从注册表重新安装验证真实 Harness Loader、三个工具和卸载。npm 版本不可重复发布；修复已发布内容时应使用新版本。不创建 npm token，不引入自动发布 workflow。
