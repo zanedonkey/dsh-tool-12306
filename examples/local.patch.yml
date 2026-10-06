@@ -1,0 +1,7 @@
+# Optional overlay after installing the bundle into the selected profile.
+# This overrides configuration; it does not install or activate an absent plugin.
+- id: tool-12306
+  config:
+    timeoutMs: 15000
+    requestIntervalMs: 1000
+    maxResults: 20
