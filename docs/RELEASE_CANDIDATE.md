@@ -57,6 +57,6 @@ pnpm 会提示 profile 项目没有独立安装 `@deepseek-ai/cordis` 和 `@deep
 
 本轮安装验收没有请求真实 12306 接口，默认单元测试和 CI 同样使用 fixture。此前的公网 API 集成测试记录见 [ACCEPTANCE.md](ACCEPTANCE.md)；外部服务可变，过去成功不能保证未来请求。
 
-没有操作用户现有桌面应用的安装按钮，也没有使用在线模型凭证。实际桌面界面安装和在线模型自然语言选参仍需在已配置模型的真实 profile 中手动验收；不能把 ToolRuntime/固定脚本测试称为在线模型端到端测试。
+上述隔离 CLI 验收没有操作用户现有桌面应用的安装按钮，也没有使用在线模型凭证。后续使用已配置模型的 rc.2 桌面端完成 5 项真实查询；随后通过桌面界面换装候选 tarball，全部 86 个安装文件与候选包一致，启用后再次通过一次真实跨午夜查询。完整记录及首次日期错误的纠正过程见 [DESKTOP_ACCEPTANCE.md](DESKTOP_ACCEPTANCE.md)。不能把 ToolRuntime/固定脚本测试称为在线模型端到端测试，也不能把本次单一模型的表现推广为所有模型的保证。
 
 GitHub 源码已公开；历史整理后的 [main CI](https://github.com/zanedonkey/dsh-tool-12306/actions/runs/37433469955) 为 8/8 通过。此包尚未上传为 Release 附件，没有创建 tag，也没有发布 npm。

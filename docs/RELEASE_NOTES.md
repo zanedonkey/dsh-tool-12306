@@ -26,7 +26,7 @@ Native China Railway 12306 query tools for DeepSeek Harness. 首次公开发布�
 
 ## Candidate validation
 
-全新 GitHub clone 通过构建、lint 和 113 项离线测试；候选 tarball 已分别通过官方 DSH 0.2.0-rc.2 / 0.2.1-alpha.1 CLI 安装、三个原生工具调用、跨午夜日期筛选及卸载验收。详情与 SHA-256 见 [RELEASE_CANDIDATE.md](RELEASE_CANDIDATE.md)。没有版本豁免，桌面界面操作与在线模型理解仍待人工验证。
+全新 GitHub clone 通过构建、lint 和 113 项离线测试；候选 tarball 已分别通过官方 DSH 0.2.0-rc.2 / 0.2.1-alpha.1 CLI 安装、三个原生工具调用、跨午夜日期筛选及卸载验收。详情与 SHA-256 见 [RELEASE_CANDIDATE.md](RELEASE_CANDIDATE.md)。没有版本豁免；rc.2 桌面端相同运行代码完成 5 项真实模型/API 查询，随后通过桌面界面重新安装本轮候选 tarball，86 个文件哈希一致，启用后再次通过跨午夜查询。首次日期错误及其他验收边界见 [DESKTOP_ACCEPTANCE.md](DESKTOP_ACCEPTANCE.md)。
 
 ## Acknowledgements
 
