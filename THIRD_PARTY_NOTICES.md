@@ -4,6 +4,10 @@
 
 Source: https://github.com/Joooook/12306-mcp
 
+Original project author: [Joooook](https://github.com/Joooook) (license attribution: Jok).
+
+This plugin is based on and optimized from the upstream 12306 query implementation, adapted for native DeepSeek Harness integration.
+
 Reviewed commit: ff6439da6f63d7d72181abea4568abd69878c600
 
 The station field layout and supplemental entry (`src/stations/loader.ts`, `missing-stations.ts`), ticket field positions and packed price mapping (`src/parser/ticket.ts`), raw response contracts (`src/types.ts`), and request parameters/discovery patterns (`src/client/`) are adapted from this MIT project. The MCP runtime, transports, server, CLI and model-visible helper tools are not incorporated.

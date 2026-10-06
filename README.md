@@ -2,6 +2,8 @@
 
 Native China Railway 12306 query tools for DeepSeek Harness.
 
+本项目基于 [Joooook/12306-mcp](https://github.com/Joooook/12306-mcp) 的 12306 查询实现进行优化，并迁移为 DeepSeek Harness 原生插件。感谢原项目作者 [Joooook](https://github.com/Joooook)（许可证署名 Jok），保留其 MIT 版权和许可证声明。
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-22.19%2B%20%7C%2024%2B-green.svg)](package.json)
 
@@ -235,7 +237,7 @@ npm run test:integration
 
 ## Acknowledgements
 
-- [Joooook/12306-mcp](https://github.com/Joooook/12306-mcp) provided reference implementations for 12306 station data, ticket queries, parsing, and related API behavior. 本项目改写了相关字段映射、参数和解析设计，保留 Jok 的 MIT 版权声明；未引入其 MCP runtime。
+- [Joooook/12306-mcp](https://github.com/Joooook/12306-mcp)，作者 [Joooook](https://github.com/Joooook)（许可证署名 Jok）：本项目基于其 12306 查询实现优化，改写了车站数据布局、票务字段映射、价格解析、响应类型和请求参数等部分。在此基础上增加 DeepSeek Harness 原生工具集成、请求节流与取消处理、跨午夜出发窗口和按实际到达日期筛选等改进。保留上游 MIT 版权和许可证声明；未引入其 MCP runtime。
 - [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) 提供原生工具协议、Cordis 生命周期、SDK 和 bundle 加载规范。
 
 代码来源、研究快照和必要许可文本见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。社区行为准则见 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。
