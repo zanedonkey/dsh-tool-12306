@@ -21,7 +21,7 @@
 | maxResults | 20 | 1–100，工具省略结果上限时使用 |
 | requestIntervalMs | 1000 | 100–60000，同一 Client 串行请求启动间隔毫秒 |
 | maxRetries | 1 | 0–2，仅临时网络/服务器故障有限重试 |
-| maxTransferPages | 3 | 1–10，中转分页上限 |
+| maxTransferPages | 3 | 1–10，中转分页上限；0.1.4 起按首程乘车日期分别计算 |
 | rateLimitCooldownMs | 60000 | 1000–3600000，429 后跨调用最短冷却毫秒 |
 | maxResponseBytes | 4194304 | 1024–16777216，实际响应流字节数上限，默认 4 MiB |
 | maxPendingRequests | 32 | 1–128，不同在途 HTTP 请求上限 |
@@ -41,3 +41,5 @@ dsh --profile rail web --patch ./examples/local.patch.yml
 仅合并相同完整 URL 的同时在途请求，不缓存已完成余票结果；取消一个调用不会中断其他调用，全部取消后终止底层请求。限速、队列和冷却属于同一 Client，不跨进程或出口 IP 汇总。
 
 跨午夜窗口最多查乘车日和次日，保持串行限速；时间窗口迁移见 [TIME_WINDOWS.md](TIME_WINDOWS.md)。插件卸载时取消请求并清空内存 Cookie，完整边界见 [SECURITY.md](../SECURITY.md)。
+
+0.1.4 起中转查询在结果数达到 `maxResults` 后仍继续扫描配置允许的页面，以选取已读取方案中总历时最短的结果。默认每个日期最多 3 页；跨午夜首程出发窗口两个日期最多 6 页。因此部分查询会比 0.1.3 多读取页面，耗时可能增加，默认请求间隔保持 1000ms。只指定末程到达窗口不会增加首程查询日期。分页到达上限或舍弃超出数量上限的方案时标记 `truncated`，不承诺所有上游方案中的全局最优。

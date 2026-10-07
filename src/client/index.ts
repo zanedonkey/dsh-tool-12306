@@ -2,7 +2,7 @@ import { normalizeConfig } from '../config.js';
 import type { Config } from '../config.js';
 import { chinaToday, validateTravelDate } from '../date.js';
 import { InvalidQueryError, ParseError } from '../errors.js';
-import { matchesTrain, resultLimit, ticketQueryDates, validateFilters } from '../filters.js';
+import { matchesTrain, matchesTransfer, resultLimit, ticketQueryDates, validateFilters, validateTransferFilters } from '../filters.js';
 import { parseTickets } from '../parser/ticket.js';
 import { parseTransfer } from '../parser/transfer.js';
 import { parseRoute } from '../parser/route.js';
@@ -66,36 +66,48 @@ export class RailwayClient {
     return { query: { date: args.date, from: args.from, to: args.to }, trains: trains.slice(0, limit) };
   }
   async queryTransfer(args: TransferQuery, signal?: AbortSignal): Promise<TransferResult> {
-    validateTravelDate(args.date, this.now()); validateFilters(args);
+    validateTravelDate(args.date, this.now()); validateTransferFilters(args);
     const limit = resultLimit(args.maxResults, this.config.maxResults);
+    const dates = ticketQueryDates(args);
     const resolver = await this.stations(signal);
     const from = resolver.resolve(args.from); const to = resolver.resolve(args.to);
     const middle = args.transferStation !== undefined ? resolver.resolve(args.transferStation) : undefined;
     const endpoint = await this.endpoint('transfer', signal);
-    let cursor = 0; let truncated = false;
-    const cursors = new Set<number>(); const keys = new Set<string>(); const routes: TransferRoute[] = [];
-    for (let page = 0; page < this.config.maxTransferPages; page++) {
-      if (cursors.has(cursor)) throw new ParseError('12306 中转分页游标重复，已停止查询。');
-      cursors.add(cursor);
-      const raw = await requestTransferPage(this.http, endpoint, args.date, from.station.telecode, to.station.telecode, middle?.station.telecode ?? '', cursor, signal);
-      for (const route of parseTransfer(raw)) {
-        if (route.firstLeg.departureDate !== args.date) throw new ParseError('12306 中转方案的出发日期与请求不一致。');
-        if (!endpointMatch(route.firstLeg.fromTelecode, from) || !endpointMatch(route.secondLeg.toTelecode, to)
-          || (middle && !endpointMatch(route.firstLeg.toTelecode, middle))
-          || !matchesTrain(route.firstLeg, args) || !matchesTrain(route.secondLeg, args)) continue;
-        const key = JSON.stringify([route.firstLeg.trainNo, route.firstLeg.fromTelecode, route.firstLeg.toTelecode, route.firstLeg.departureDate,
-          route.secondLeg.trainNo, route.secondLeg.fromTelecode, route.secondLeg.toTelecode, route.secondLeg.departureDate]);
-        if (keys.has(key)) continue;
-        keys.add(key); routes.push(route);
+    let truncated = false;
+    // Keep only the best bounded candidate set while scanning the configured pages.
+    const best = new Map<string, TransferRoute>();
+    for (const date of dates) {
+      let cursor = 0;
+      const cursors = new Set<number>();
+      for (let page = 0; page < this.config.maxTransferPages; page++) {
+        if (cursors.has(cursor)) throw new ParseError('12306 中转分页游标重复，已停止查询。');
+        cursors.add(cursor);
+        const raw = await requestTransferPage(this.http, endpoint, date, from.station.telecode, to.station.telecode, middle?.station.telecode ?? '', cursor, signal);
+        for (const route of parseTransfer(raw)) {
+          if (route.firstLeg.departureDate !== date) throw new ParseError('12306 中转方案的出发日期与请求不一致。');
+          if (!endpointMatch(route.firstLeg.fromTelecode, from) || !endpointMatch(route.secondLeg.toTelecode, to)
+            || (middle && !endpointMatch(route.firstLeg.toTelecode, middle))
+            || !matchesTransfer(route, args)) continue;
+          const key = JSON.stringify([route.firstLeg.trainNo, route.firstLeg.fromTelecode, route.firstLeg.toTelecode, route.firstLeg.departureDate,
+            route.secondLeg.trainNo, route.secondLeg.fromTelecode, route.secondLeg.toTelecode, route.secondLeg.departureDate]);
+          if (best.has(key)) continue;
+          best.set(key, route);
+          if (best.size > limit) {
+            truncated = true;
+            const worst = [...best].sort((a, b) => a[1].totalDurationMinutes - b[1].totalDurationMinutes).at(-1)!;
+            best.delete(worst[0]);
+          }
+        }
+        if (typeof raw.data === 'string') break; // parseTransfer above already raises a domain error.
+        if (raw.data.can_query === 'N') break;
+        if (raw.data.can_query !== 'Y') throw new ParseError('12306 中转分页标记无法识别。');
+        if (page + 1 === this.config.maxTransferPages) { truncated = true; break; }
+        cursor = raw.data.result_index;
       }
-      if (typeof raw.data === 'string') break; // parseTransfer above already raises a domain error.
-      if (raw.data.can_query === 'N') break;
-      if (raw.data.can_query !== 'Y') throw new ParseError('12306 中转分页标记无法识别。');
-      if (routes.length >= limit || page + 1 === this.config.maxTransferPages) { truncated = true; break; }
-      cursor = raw.data.result_index;
     }
+    const routes = [...best.values()];
     routes.sort((a, b) => a.totalDurationMinutes - b.totalDurationMinutes);
-    return { query: { date: args.date, from: args.from, to: args.to }, routes: routes.slice(0, limit), truncated: truncated || routes.length > limit };
+    return { query: { date: args.date, from: args.from, to: args.to }, routes, truncated };
   }
   async trainRoute(args: RouteQuery, signal?: AbortSignal): Promise<RouteResult> {
     const date = args.date ?? chinaToday(this.now()); validateTravelDate(date, this.now());

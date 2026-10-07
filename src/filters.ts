@@ -1,7 +1,7 @@
 import { addDays, clockMinutes, validDate } from './date.js';
 import { InvalidQueryError } from './errors.js';
 import { SEAT_TYPES, TRAIN_TYPES } from './types.js';
-import type { TicketQuery, Train, TransferQuery } from './types.js';
+import type { TicketQuery, Train, TransferQuery, TransferRoute } from './types.js';
 
 interface TimeWindow { start: number; end: number; crossesMidnight: boolean }
 // Compare China-local calendar dates on one numeric axis, independent of the host timezone.
@@ -39,21 +39,43 @@ export function resultLimit(maxResults: number | undefined, defaultLimit: number
 export function validateFilters(args: TicketQuery | TransferQuery): void {
   if (args.trainTypes?.some(type => !TRAIN_TYPES.includes(type))) throw new InvalidQueryError('trainTypes 仅支持 G、D、C、Z、T、K。');
   if (args.seatType && !SEAT_TYPES.includes(args.seatType)) throw new InvalidQueryError('无法识别席别。');
-  const timeArgs = args as TicketQuery;
-  timeWindow(args.date, timeArgs.departureAfter, timeArgs.departureBefore, false);
-  timeWindow(args.date, timeArgs.arrivalAfter, timeArgs.arrivalBefore, true);
+  timeWindow(args.date, args.departureAfter, args.departureBefore, false);
+  timeWindow(args.date, args.arrivalAfter, args.arrivalBefore, true);
 }
-export function matchesTrain(train: Train, args: TicketQuery | TransferQuery): boolean {
+export function validateTransferFilters(args: TransferQuery): void {
+  validateFilters(args);
+  for (const field of ['minTransferMinutes', 'maxTransferMinutes'] as const) {
+    const value = args[field];
+    if (value !== undefined && (!Number.isSafeInteger(value) || value < 0)) throw new InvalidQueryError(`${field} 必须是非负安全整数（分钟）。`);
+  }
+  if (args.minTransferMinutes !== undefined && args.maxTransferMinutes !== undefined && args.minTransferMinutes > args.maxTransferMinutes) {
+    throw new InvalidQueryError('最短换乘时间不能大于最长换乘时间。');
+  }
+  if (args.sameStationOnly !== undefined && typeof args.sameStationOnly !== 'boolean') throw new InvalidQueryError('sameStationOnly 必须是布尔值。');
+}
+function matchesSeatsAndType(train: Train, args: TicketQuery | TransferQuery): boolean {
   if (args.trainTypes?.length && !args.trainTypes.some(type => train.trainCode.startsWith(type))) return false;
   if (args.onlyAvailable) {
     if (args.seatType ? train.seats[args.seatType].available !== true : !Object.values(train.seats).some(seat => seat.available === true)) return false;
   }
-  const timeArgs = args as TicketQuery;
-  const departure = timeWindow(args.date, timeArgs.departureAfter, timeArgs.departureBefore, false);
-  const arrival = timeWindow(args.date, timeArgs.arrivalAfter, timeArgs.arrivalBefore, true);
-  const leaves = calendarMinutes(train.departureDate, train.departureTime);
-  const arrives = calendarMinutes(train.arrivalDate, train.arrivalTime);
+  return true;
+}
+function matchesTimes(first: Train, last: Train, args: TicketQuery | TransferQuery): boolean {
+  const departure = timeWindow(args.date, args.departureAfter, args.departureBefore, false);
+  const arrival = timeWindow(args.date, args.arrivalAfter, args.arrivalBefore, true);
+  const leaves = calendarMinutes(first.departureDate, first.departureTime);
+  const arrives = calendarMinutes(last.arrivalDate, last.arrivalTime);
   if (leaves < departure.start || leaves > departure.end) return false;
   if (arrives < arrival.start || arrives > arrival.end) return false;
   return true;
+}
+export function matchesTrain(train: Train, args: TicketQuery | TransferQuery): boolean {
+  return matchesSeatsAndType(train, args) && matchesTimes(train, train, args);
+}
+export function matchesTransfer(route: TransferRoute, args: TransferQuery): boolean {
+  if (args.sameStationOnly && !route.sameStation) return false;
+  if (args.minTransferMinutes !== undefined && route.transferMinutes < args.minTransferMinutes) return false;
+  if (args.maxTransferMinutes !== undefined && route.transferMinutes > args.maxTransferMinutes) return false;
+  return matchesSeatsAndType(route.firstLeg, args) && matchesSeatsAndType(route.secondLeg, args)
+    && matchesTimes(route.firstLeg, route.secondLeg, args);
 }

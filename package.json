@@ -1,6 +1,6 @@
 {
   "name": "dsh-tool-12306",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Native China Railway query tools for DeepSeek Harness",
   "repository": { "type": "git", "url": "git+https://github.com/zanedonkey/dsh-tool-12306.git" },
   "bugs": { "url": "https://github.com/zanedonkey/dsh-tool-12306/issues" },

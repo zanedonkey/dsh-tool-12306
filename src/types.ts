@@ -39,6 +39,16 @@ export interface TicketQuery extends Query {
 export interface TransferQuery extends Query {
   transferStation?: string;
   trainTypes?: TrainType[];
+  /** First-leg departure window, HH:mm on date; reversed bounds span midnight. */
+  departureAfter?: string;
+  departureBefore?: string;
+  /** Final arrival window, HH:mm on date or an explicit China-local datetime. */
+  arrivalAfter?: string;
+  arrivalBefore?: string;
+  /** Inclusive connection interval in minutes; omitted means no extra bound. */
+  minTransferMinutes?: number;
+  maxTransferMinutes?: number;
+  sameStationOnly?: boolean;
   onlyAvailable?: boolean;
   seatType?: SeatType;
   maxResults?: number;

@@ -1,11 +1,11 @@
 # Releasing
 
-这是人工维护的轻量发布流程，没有自动发布凭据。当前版本为 0.1.3，可通过 [npm](https://www.npmjs.com/package/dsh-tool-12306) 或 [v0.1.3 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.3) 安装。后续每次发布仍需明确授权；执行下面的本地检查不会发布包。
+这是人工维护的轻量发布流程，没有自动发布凭据。当前源码版本为 0.1.4，本次分发渠道为 [npm](https://www.npmjs.com/package/dsh-tool-12306)；现有 [v0.1.3 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.3) 是旧版安装包。后续每次发布仍需明确授权；执行下面的本地检查不会发布包。
 
 ## Local preparation
 
 1. 核对 [README](../README.md) 的真实安装状态、两个 SDK 的兼容范围和所有工具参数。检查 [SECURITY.md](../SECURITY.md)、[LICENSE](../LICENSE) 及上游 attribution。
-2. 按 Semantic Versioning 判断是否需要新版本。本轮整理保留 0.1.3；不要为形式无故增号。实际发版时更新 package.json、根锁文件和两套 SDK 锁快照，整理 CHANGELOG 的 Unreleased 条目；0.1.x 旧条目是开发记录，不能伪装成公开发行历史。
+2. 按 Semantic Versioning 判断是否需要新版本；不要为形式无故增号。实际发版时更新 package.json、根锁文件和两套 SDK 锁快照，整理 CHANGELOG 的 Unreleased 条目；0.1.0–0.1.2 是本地开发记录，不能伪装成公开发行历史。
 3. 依赖更新按 CONTRIBUTING 的流程更新两套锁文件。普通 CI 使用固定锁和离线 fixture；默认不运行真实 12306 测试。
 
 ```sh
@@ -45,7 +45,7 @@ GitHub Actions 已实际运行；[历史整理后 main 的工作流](https://git
 
 ## npm publication — authorization required
 
-0.1.3 已由维护者授权手工发布到 npm，`latest` 指向 0.1.3，验证记录见 [NPM_RELEASE_ACCEPTANCE.md](NPM_RELEASE_ACCEPTANCE.md)。npm 包的编译文件与 GitHub Release 相同，README 和上游署名更新后分别打包，因此两个渠道的归档校验值不同；不要用 GitHub 的 SHA-256 校验文件核对 npm tarball，也不要覆盖已有 Release 附件。
+0.1.3 已由维护者授权手工发布到 npm，历史验证记录见 [NPM_RELEASE_ACCEPTANCE.md](NPM_RELEASE_ACCEPTANCE.md)。该版本 npm 包的编译文件与 GitHub Release 相同，README 和上游署名更新后分别打包，因此两个渠道的归档校验值不同；不要用 GitHub 的 SHA-256 校验文件核对 npm tarball，也不要覆盖已有 Release 附件。0.1.4 包含新的中转查询能力，与旧版 Release 内容不同；以 npm 注册表实际版本及 `dist-tags` 为准。
 
 后续发布前再次确认包名、当前账号、版本是否已占用及授权范围，完成干净构建、测试和 tarball 检查，并同步包内的安装说明。登录账号需满足 npm 的 2FA 发布要求；发布验证由维护者在 npm 官方页面完成，勿在 Issue、日志或仓库中记录验证码、恢复码和凭据。
 

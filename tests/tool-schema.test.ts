@@ -6,6 +6,7 @@ import ToolRuntime from '@deepseek-ai/dsh-tools';
 import { ToolCallId } from '@deepseek-ai/dsh-llm';
 import * as Plugin from '../src/index.js';
 import { fixtureFetch, midnightFetch } from './helpers.js';
+import transfer from './fixtures/transfer.json' with { type: 'json' };
 const contexts: Context[] = [];
 afterEach(async () => { for (const ctx of contexts.splice(0)) await ctx.fiber.dispose(); });
 async function setup() {
@@ -15,6 +16,38 @@ async function setup() {
   return ctx;
 }
 describe('real Harness ToolRuntime', () => {
+  it('exposes transfer filters and validates their execution with canonical output', async () => {
+    const ctx = await setup(); const original = fixtureFetch();
+    const fetcher = fixtureFetch();
+    fetcher.mockImplementation(async (input, init) => {
+      if (String(input).includes('/lcquery/query')) {
+        const raw = structuredClone(transfer);
+        raw.data.middleList[0]!.train_date = '2099-10-07'; raw.data.middleList[0]!.middle_date = '2099-10-08';
+        return new Response(JSON.stringify(raw));
+      }
+      return original(input, init);
+    });
+    vi.stubGlobal('fetch', fetcher); await ctx.plugin(Plugin, { requestIntervalMs: 100 });
+    const execute = (args: unknown) => ctx.tools.execute({ signal: new AbortController().signal, callId: ToolCallId('transfer-filters'), name: '12306_query_transfer', arguments: args });
+    const args = { date: '2099-10-07', from: '深圳', to: '拉萨', departureAfter: '16:00', departureBefore: '16:00',
+      arrivalAfter: '2099-10-08T21:50', arrivalBefore: '2099-10-08T21:50', minTransferMinutes: 180, maxTransferMinutes: 180, sameStationOnly: false };
+    const result = await execute(args);
+    expect(result.isError).toBe(false);
+    if (result.isError) throw new Error(JSON.stringify(result.content));
+    expect(result.value).toMatchObject({ routes: [{ transferMinutes: 180, sameStation: false }], truncated: false });
+    expect(JSON.parse(result.content.filter(b => b.type === 'text').map(b => b.text).join(''))).toEqual(result.value);
+    const calls = fetcher.mock.calls.length;
+    expect((await execute({ ...args, minTransferMinutes: 181 })).isError).toBe(true);
+    expect((await execute({ ...args, maxTransferMinutes: 1.5 })).isError).toBe(true);
+    expect((await execute({ ...args, sameStationOnly: 'true' })).isError).toBe(true);
+    expect(fetcher.mock.calls).toHaveLength(calls);
+    const schema = ctx.tools.schemas().find(tool => tool.name === '12306_query_transfer');
+    expect(schema?.parameters.required).toEqual(['date', 'from', 'to']);
+    expect(schema?.parameters).toMatchObject({ properties: {
+      minTransferMinutes: { type: 'integer' }, maxTransferMinutes: { type: 'integer' }, sameStationOnly: { type: 'boolean' },
+      departureAfter: { type: 'string' }, arrivalBefore: { description: expect.stringContaining('YYYY-MM-DDTHH:mm') },
+    } });
+  });
   it('supports one overnight call and preserves the correct next-day arrival in canonical output', async () => {
     const ctx = await setup(); const fetcher = midnightFetch(); vi.stubGlobal('fetch', fetcher);
     await ctx.plugin(Plugin, { requestIntervalMs: 100 });

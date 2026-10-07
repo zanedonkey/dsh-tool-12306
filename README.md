@@ -13,7 +13,7 @@ Native China Railway 12306 query tools for DeepSeek Harness.
 
 本项目不是 MCP Server，也不是自动购票或抢票工具。本项目为非官方开源项目，与中国铁路及 12306 官方无隶属或合作关系。
 
-当前版本为 **0.1.3**。预编译安装包通过 [GitHub Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.3) 提供；也可从 [npm](https://www.npmjs.com/package/dsh-tool-12306) 安装。
+当前版本为 **0.1.4**，包含中转首末程时间窗口、换乘时长筛选、仅同站换乘及后页方案选择改进。[npm](https://www.npmjs.com/package/dsh-tool-12306) 安装与本地构建步骤见下文。现有 [GitHub v0.1.3 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.3) 的安装包不包含这些改进。
 
 ## Features
 
@@ -21,6 +21,7 @@ Native China Railway 12306 query tools for DeepSeek Harness.
 - 城市/车站解析；G/D/C/Z/T/K 车次类型及指定席别有票筛选。
 - 跨午夜出发窗口和按真实日期、时间筛选到达。
 - 两程中转、每程余票、等待时间及跨站换乘信息。
+- 中转首末程时间窗口、最短/最长换乘间隔和仅同站方案（0.1.4 起）。
 - 按车次编号查询完整经停线路，或截取沿途区间。
 - DeepSeek Harness 原生结构化输出、取消和卸载清理。
 
@@ -41,19 +42,21 @@ Native China Railway 12306 query tools for DeepSeek Harness.
 
 ### 从 npm 安装
 
-桌面端打开“插件 → 添加插件”，输入 `dsh-tool-12306@0.1.3`，安装后点击“立即启用”。
+桌面端打开“插件 → 添加插件”，输入 `dsh-tool-12306@0.1.4`，安装后点击“立即启用”。已安装旧版时，先卸载旧版再安装新版本。
 
 CLI 使用已安装的兼容版本 `dsh`：
 
 ```sh
-dsh plugin --profile rail add dsh-tool-12306@0.1.3
+dsh plugin --profile rail add dsh-tool-12306@0.1.4
 dsh --profile rail --dump-config
 dsh --profile rail web
 ```
 
-如果只需要把包作为 Node.js 项目依赖安装，可以执行 `npm install dsh-tool-12306@0.1.3`；在 Harness 中启用工具请使用上面的插件安装流程。
+如果只需要把包作为 Node.js 项目依赖安装，可以执行 `npm install dsh-tool-12306@0.1.4`；在 Harness 中启用工具请使用上面的插件安装流程。
 
 ### 下载预编译安装包
+
+现有 GitHub Release 提供旧版 0.1.3，不支持本文的中转新增筛选。需要 0.1.4 请使用 npm 或源码构建；本次不创建新 GitHub Release。
 
 从 [v0.1.3 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.3) 下载：
 
@@ -75,12 +78,12 @@ npm test
 npm pack
 ```
 
-这会生成 `dsh-tool-12306-0.1.3.tgz`，包含编译后的 ESM 和 TypeScript 声明文件。桌面端按上面的本地路径方式安装；不要启用不兼容版本豁免。
+这会生成 `dsh-tool-12306-0.1.4.tgz`，包含编译后的 ESM 和 TypeScript 声明文件。桌面端按上面的本地路径方式安装；不要启用不兼容版本豁免。
 
 CLI：在安装包所在目录，用已经安装的兼容版本 `dsh` 执行：
 
 ```sh
-dsh plugin --profile rail add ./dsh-tool-12306-0.1.3.tgz
+dsh plugin --profile rail add ./dsh-tool-12306-0.1.4.tgz
 dsh --profile rail --dump-config
 dsh --profile rail web
 ```
@@ -146,9 +149,22 @@ dsh --profile rail web
 
 ### `12306_query_transfer`
 
-查询官网提供的两程中转换乘方案。必填 `date`、`from`、`to`；可选 `transferStation`、`trainTypes`、`onlyAvailable`、`seatType`、`maxResults`，取值与上述定义一致。类型和有票条件要求**两程均满足**；不支持直达工具的出发/到达时间参数。
+查询官网提供的两程中转换乘方案。必填 `date`、`from`、`to`；可选 `transferStation`、`trainTypes`、`onlyAvailable`、`seatType`、`maxResults`，取值与上述定义一致。类型和有票条件要求**两程均满足**。
 
-输出为 `{ query, routes: [...], truncated }`。每个方案包含 `firstLeg`、`secondLeg`、`totalDurationMinutes`、`transferStation`、`transferToStation`、`sameStation`、`transferMinutes`。`truncated: true` 表示已达到结果数或分页上限，当前结果不代表所有未读取方案中的全局最优路线。
+以下参数从 **0.1.4** 起支持，旧版 0.1.3 不支持：
+
+| 参数 | 说明 |
+| --- | --- |
+| `departureAfter` / `departureBefore` | 仅筛选**首程**出发，含边界 `HH:mm`；下限晚于上限时内部查询乘车日和次日 |
+| `arrivalAfter` / `arrivalBefore` | 仅筛选**末程**实际到达日期时间；`HH:mm` 锚定 `date`，也支持中国当地 `YYYY-MM-DDTHH:mm` |
+| `minTransferMinutes` / `maxTransferMinutes` | 含边界的换乘间隔分钟数，非负安全整数；最短不能大于最长；省略时不额外限制 |
+| `sameStationOnly` | `true` 仅返回前程到达站代码与后程出发站代码相同的方案；省略或 `false` 允许跨站 |
+
+换乘间隔是两程时间差，不能保证实际赶得上车；同站也可能需要较长的出站、进站或安检时间。跨站交通耗时需自行核对。不会自动计算安全换乘时间。
+
+输出为 `{ query, routes: [...], truncated }`。每个方案包含 `firstLeg`、`secondLeg`、`totalDurationMinutes`、`transferStation`、`transferToStation`、`sameStation`、`transferMinutes`。
+
+0.1.4 会在 `maxTransferPages` 范围内继续扫描后页，保留符合条件且总历时最短的最多 `maxResults` 个去重方案，并按总历时排序。分页上限按首程乘车日期分别计算；默认每个日期最多 3 页，跨午夜两个日期最多 6 页，保持串行限速。`truncated: true` 表示丢弃了超过结果上限的方案或仍有未读取页面，不保证全局最优；仅重复方案或结果数恰好等于上限不会单独触发此标记。旧版 0.1.3 则可能在达到结果数后提前停止分页。
 
 ### `12306_train_route`
 
@@ -178,6 +194,24 @@ dsh --profile rail web
 跨午夜：`date = 2026-10-10`、`departureAfter = 23:00`、`departureBefore = 02:00` 表示 10 月 10 日晚间至 11 日凌晨。单次工具调用内部顺序查询两天，合并排序后限制结果数。次日请求失败会明确报错，不返回不完整结果。
 
 到达 `HH:mm` 锚定乘车日；单独 `arrivalBefore: "02:00"` 指当天凌晨 2 点。要筛**次日**凌晨，应使用 `arrivalAfter: "2026-10-11T00:00"`、`arrivalBefore: "2026-10-11T02:00"`。这是 0.1.3 的语义变更，迁移及边界详见 [Time Windows](docs/TIME_WINDOWS.md)。
+
+中转筛选示例（**0.1.4 起**）：
+
+```json
+{
+  "date": "2026-10-10",
+  "from": "深圳",
+  "to": "拉萨",
+  "departureAfter": "16:00",
+  "arrivalBefore": "2026-10-12T22:00",
+  "minTransferMinutes": 60,
+  "maxTransferMinutes": 240,
+  "sameStationOnly": true,
+  "maxResults": 10
+}
+```
+
+可以向模型说：“查 10 月 10 日深圳到拉萨的中转，首程下午四点以后出发，换乘间隔一到四小时，只看同站换乘，最晚 12 日晚上十点到。”条件过严可能返回空方案，这不表示存在满足条件的列车。出发条件只用于首程，到达条件只用于末程；到达窗口不会单独扩展乘车日期。
 
 ## Architecture
 

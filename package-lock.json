@@ -1,12 +1,12 @@
 {
   "name": "dsh-tool-12306",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
       "name": "dsh-tool-12306",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "license": "MIT",
       "dependencies": {
         "@deepseek-ai/schemastery": "3.18.4"
