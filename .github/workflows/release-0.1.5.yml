@@ -27,6 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ env.SOURCE_SHA }}
           persist-credentials: false
       - name: Verify published npm artifact
         shell: bash
