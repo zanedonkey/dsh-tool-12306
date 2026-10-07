@@ -37,7 +37,7 @@ npm pack
 
 GitHub Actions 已实际运行；[历史整理后 main 的工作流](https://github.com/zanedonkey/dsh-tool-12306/actions/runs/37433469955) 的两套 SDK、Node 22/24 和两种 OS 共 8 个任务通过。每次更新源码后仍需检查该提交自己的 CI；不要把历史成功结果当成后续提交的保证。
 
-建议由仓库所有者手动确认：Issues 可用、private vulnerability reporting 已启用，并检查 Security 页确实有 Report a vulnerability；可选开启 require PR/CI、禁止 force push 和分支删除。Description 建议 `Native China Railway 12306 query tools for DeepSeek Harness.`，Topics 建议 deepseek、deepseek-harness、12306、china-railway、typescript、ai-agent、tool-plugin。本轮只提出建议，不改远程设置。
+2026-10-07 已确认 Issues 可用，并经维护者授权启用 private vulnerability reporting。About 的 Description 为 `Native China Railway 12306 query tools for DeepSeek Harness.`，Website 指向 [npm 安装页面](https://www.npmjs.com/package/dsh-tool-12306)，Topics 为 deepseek、deepseek-harness、12306、china-railway、typescript、ai-agent、tool-plugin。安全报告入口及备用联系流程见 [SECURITY.md](../SECURITY.md)。分支保护仍由维护者按需设置：可选择 require PR/CI、禁止 force push 和分支删除；本次没有修改这些规则。
 
 ## Tag and Release — authorization required
 

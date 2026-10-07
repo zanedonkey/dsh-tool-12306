@@ -4,7 +4,7 @@
 
 请勿在公开 Issue/PR 中提交漏洞利用细节、Cookie、API Key、Token、账号凭据或个人信息。本项目没有专门安全邮箱，不提供虚构联系方式。
 
-2026-10-07 核对时，仓库的 private vulnerability reporting 尚未开启。若 [Security 页](https://github.com/zanedonkey/dsh-tool-12306/security) 已显示 **Report a vulnerability**，请通过该入口提交私密报告；若没有该按钮，请只在 Issue 中请求建立私密联系渠道，不提交漏洞细节或附件，等待维护者提供渠道。请以该入口的实际可用状态为准。
+2026-10-07 已确认开启仓库的 private vulnerability reporting。请登录 GitHub，在 [Security 页](https://github.com/zanedonkey/dsh-tool-12306/security) 选择 **Report a vulnerability**，通过该入口提交私密报告。若入口暂时不可用，请只在 Issue 中请求建立私密联系渠道，不提交漏洞细节或附件，等待维护者提供渠道。
 
 报告应包含受影响版本、影响范围、最小脱敏复现及建议修复。敏感问题包括：凭据/行程泄露、非官方地址请求或不安全重定向、执行远端车站脚本、资源限制绕过、依赖漏洞及宿主交互中的隐私问题。普通车次数据错误请使用 Bug Report。
 
