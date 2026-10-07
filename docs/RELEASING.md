@@ -45,6 +45,8 @@ GitHub Actions 已实际运行；[历史整理后 main 的工作流](https://git
 
 ## npm publication — authorization required
 
+0.1.4 已由维护者授权手工发布到 npm，公开注册表 `latest` 指向 `0.1.4`；源码 CI 和两套 SDK 的发布后安装验证见 [NPM_0.1.4_ACCEPTANCE.md](NPM_0.1.4_ACCEPTANCE.md)。本次未创建新 GitHub Release。
+
 0.1.3 已由维护者授权手工发布到 npm，历史验证记录见 [NPM_RELEASE_ACCEPTANCE.md](NPM_RELEASE_ACCEPTANCE.md)。该版本 npm 包的编译文件与 GitHub Release 相同，README 和上游署名更新后分别打包，因此两个渠道的归档校验值不同；不要用 GitHub 的 SHA-256 校验文件核对 npm tarball，也不要覆盖已有 Release 附件。0.1.4 包含新的中转查询能力，与旧版 Release 内容不同；以 npm 注册表实际版本及 `dist-tags` 为准。
 
 后续发布前再次确认包名、当前账号、版本是否已占用及授权范围，完成干净构建、测试和 tarball 检查，并同步包内的安装说明。登录账号需满足 npm 的 2FA 发布要求；发布验证由维护者在 npm 官方页面完成，勿在 Issue、日志或仓库中记录验证码、恢复码和凭据。
