@@ -43,3 +43,5 @@ dsh --profile rail web --patch ./examples/local.patch.yml
 跨午夜窗口最多查乘车日和次日，保持串行限速；时间窗口迁移见 [TIME_WINDOWS.md](TIME_WINDOWS.md)。插件卸载时取消请求并清空内存 Cookie，完整边界见 [SECURITY.md](../SECURITY.md)。
 
 0.1.4 起中转查询在结果数达到 `maxResults` 后仍继续扫描配置允许的页面，以选取已读取方案中总历时最短的结果。默认每个日期最多 3 页；跨午夜首程出发窗口两个日期最多 6 页。因此部分查询会比 0.1.3 多读取页面，耗时可能增加，默认请求间隔保持 1000ms。只指定末程到达窗口不会增加首程查询日期。分页到达上限或舍弃超出数量上限的方案时标记 `truncated`，不承诺所有上游方案中的全局最优。
+
+0.1.5 起可通过工具参数 `sortBy: "price"` 改为按最低已知有票组合总价保留路线，分页预算与请求频率相同。每条路线的 `maxSeatCombinations` 是工具参数（1–20，默认 5），并非插件 config；保留路线仍受 `maxResults` 限制。组合最多临时枚举 12×12 个席别对，返回列表限长，不发送额外补价请求。规则见 [TRANSFER_PRICING.md](TRANSFER_PRICING.md)。

@@ -1,6 +1,6 @@
 {
   "name": "dsh-tool-12306",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Native China Railway query tools for DeepSeek Harness",
   "repository": { "type": "git", "url": "git+https://github.com/zanedonkey/dsh-tool-12306.git" },
   "bugs": { "url": "https://github.com/zanedonkey/dsh-tool-12306/issues" },
@@ -12,7 +12,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" }, "./package.json": "./package.json" },
-  "files": ["dist", "cordis.patch.yml", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "SECURITY.md", "CHANGELOG.md", "docs/CONFIGURATION.md", "docs/TIME_WINDOWS.md", "docs/COMPATIBILITY.md", "examples"],
+  "files": ["dist", "cordis.patch.yml", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "SECURITY.md", "CHANGELOG.md", "docs/CONFIGURATION.md", "docs/TIME_WINDOWS.md", "docs/TRANSFER_PRICING.md", "docs/COMPATIBILITY.md", "examples"],
   "dsh": { "bundle": { "patch": "./cordis.patch.yml" } },
   "scripts": {
     "build": "tsc -p tsconfig.json && tsc -p tsconfig.test.json",

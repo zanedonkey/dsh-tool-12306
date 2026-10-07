@@ -13,7 +13,7 @@ Native China Railway 12306 query tools for DeepSeek Harness.
 
 本项目不是 MCP Server，也不是自动购票或抢票工具。本项目为非官方开源项目，与中国铁路及 12306 官方无隶属或合作关系。
 
-当前版本为 **0.1.4**，包含中转首末程时间窗口、换乘时长筛选、仅同站换乘及后页方案选择改进。[npm](https://www.npmjs.com/package/dsh-tool-12306) 安装与本地构建步骤见下文。现有 [GitHub v0.1.3 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.3) 的安装包不包含这些改进。
+当前版本为 **0.1.5**，包含中转时间窗口、换乘筛选、逐程席别组合、已知票价合计和按最低已知总价排序。可从 [npm](https://www.npmjs.com/package/dsh-tool-12306) 或 [GitHub v0.1.5 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.5) 安装。
 
 ## Features
 
@@ -22,6 +22,7 @@ Native China Railway 12306 query tools for DeepSeek Harness.
 - 跨午夜出发窗口和按真实日期、时间筛选到达。
 - 两程中转、每程余票、等待时间及跨站换乘信息。
 - 中转首末程时间窗口、最短/最长换乘间隔和仅同站方案（0.1.4 起）。
+- 逐程席别偏好、有票席别组合和最低已知组合票价排序（0.1.5 起）。
 - 按车次编号查询完整经停线路，或截取沿途区间。
 - DeepSeek Harness 原生结构化输出、取消和卸载清理。
 
@@ -42,26 +43,24 @@ Native China Railway 12306 query tools for DeepSeek Harness.
 
 ### 从 npm 安装
 
-桌面端打开“插件 → 添加插件”，输入 `dsh-tool-12306@0.1.4`，安装后点击“立即启用”。已安装旧版时，先卸载旧版再安装新版本。
+桌面端打开“插件 → 添加插件”，输入 `dsh-tool-12306@0.1.5`，安装后点击“立即启用”。已安装旧版时，先卸载旧版再安装新版本。
 
 CLI 使用已安装的兼容版本 `dsh`：
 
 ```sh
-dsh plugin --profile rail add dsh-tool-12306@0.1.4
+dsh plugin --profile rail add dsh-tool-12306@0.1.5
 dsh --profile rail --dump-config
 dsh --profile rail web
 ```
 
-如果只需要把包作为 Node.js 项目依赖安装，可以执行 `npm install dsh-tool-12306@0.1.4`；在 Harness 中启用工具请使用上面的插件安装流程。
+如果只需要把包作为 Node.js 项目依赖安装，可以执行 `npm install dsh-tool-12306@0.1.5`；在 Harness 中启用工具请使用上面的插件安装流程。
 
 ### 下载预编译安装包
 
-现有 GitHub Release 提供旧版 0.1.3，不支持本文的中转新增筛选。需要 0.1.4 请使用 npm 或源码构建；本次不创建新 GitHub Release。
+从 [v0.1.5 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.5) 下载：
 
-从 [v0.1.3 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.3) 下载：
-
-- [dsh-tool-12306-0.1.3.tgz](https://github.com/zanedonkey/dsh-tool-12306/releases/download/v0.1.3/dsh-tool-12306-0.1.3.tgz)
-- [SHA-256 校验文件](https://github.com/zanedonkey/dsh-tool-12306/releases/download/v0.1.3/dsh-tool-12306-0.1.3.tgz.sha256)
+- [dsh-tool-12306-0.1.5.tgz](https://github.com/zanedonkey/dsh-tool-12306/releases/download/v0.1.5/dsh-tool-12306-0.1.5.tgz)
+- [SHA-256 校验文件](https://github.com/zanedonkey/dsh-tool-12306/releases/download/v0.1.5/dsh-tool-12306-0.1.5.tgz.sha256)
 
 对照校验文件核对安装包的 SHA-256。桌面端打开“插件 → 添加插件”，输入下载的 `.tgz` 文件的本地完整路径，安装后点击“立即启用”。已安装旧版时，先卸载旧版，再安装新包。CLI 安装命令见下文。
 
@@ -78,12 +77,12 @@ npm test
 npm pack
 ```
 
-这会生成 `dsh-tool-12306-0.1.4.tgz`，包含编译后的 ESM 和 TypeScript 声明文件。桌面端按上面的本地路径方式安装；不要启用不兼容版本豁免。
+这会生成 `dsh-tool-12306-0.1.5.tgz`，包含编译后的 ESM 和 TypeScript 声明文件。桌面端按上面的本地路径方式安装；不要启用不兼容版本豁免。
 
 CLI：在安装包所在目录，用已经安装的兼容版本 `dsh` 执行：
 
 ```sh
-dsh plugin --profile rail add ./dsh-tool-12306-0.1.4.tgz
+dsh plugin --profile rail add ./dsh-tool-12306-0.1.5.tgz
 dsh --profile rail --dump-config
 dsh --profile rail web
 ```
@@ -166,6 +165,22 @@ dsh --profile rail web
 
 0.1.4 会在 `maxTransferPages` 范围内继续扫描后页，保留符合条件且总历时最短的最多 `maxResults` 个去重方案，并按总历时排序。分页上限按首程乘车日期分别计算；默认每个日期最多 3 页，跨午夜两个日期最多 6 页，保持串行限速。`truncated: true` 表示丢弃了超过结果上限的方案或仍有未读取页面，不保证全局最优；仅重复方案或结果数恰好等于上限不会单独触发此标记。旧版 0.1.3 则可能在达到结果数后提前停止分页。
 
+#### 逐程席别与组合票价（0.1.5 起）
+
+| 参数 | 说明 |
+| --- | --- |
+| `firstSeatType` / `secondSeatType` | 分别指定第一、第二程席别；覆盖对应程的 `seatType`，未指定的一程仍回退共同 `seatType`；枚举与直达工具一致 |
+| `sortBy` | 默认 `duration`，保持总历时排序；`price` 按路线最低已知有票组合总价排序，无已知合计的路线排最后，同价按总历时 |
+| `maxSeatCombinations` | 每条路线展示的席别组合数量，1–20，默认 5；不改变路线数量上限 `maxResults` |
+
+`onlyAvailable: true` 时，两程各自要求所选席别有票；不指定席别时允许不同席别组合。未设置 `onlyAvailable` 时保持原有路线返回规则：即使所选席别无票也可返回路线，其有票组合列表可能为空。
+
+每条返回路线新增 `pricing`：币种 `CNY`、`lowestKnownPrice`、`incomplete`、`combinationCount`、`combinations` 和 `truncated`。组合只推荐**两程明确有票**的席别，包含两程席别、各程票价及 `totalPrice`，金额为人民币元。票价全部已知时才计算合计；任一程未知则合计为 `null`，不会将缺失价格当成零。已知合计升序，未知合计排后。
+
+`lowestKnownPrice` 为符合席别偏好的有票组合中最低已知合计；`incomplete: true` 表示存在未知合计或没有符合偏好的有票组合，因此不能保证实际最低价。`pricing.truncated` 仅指组合列表限长，最低已知合计与价格完整性仍在所有符合条件的组合中计算；顶层 `truncated` 仍表示路线数或分页受限。最低价选择在读取各页时生效，避免先按历时截断后才排序。
+
+总价只合计查询响应中可解析的两程票价，不含跨站交通、服务费或其他费用；不额外发送补价请求。不同铺位价格无法确定时保持未知，不猜测具体铺位或座号。详见 [Transfer Pricing](docs/TRANSFER_PRICING.md)。
+
 ### `12306_train_route`
 
 查询指定列车的经停站。必填 `trainCode`（例如 `G1`）；可选 `date`（默认中国当天）、`from`、`to`（截取沿途区间）。无需提供内部 `train_no` 或站代码。
@@ -212,6 +227,24 @@ dsh --profile rail web
 ```
 
 可以向模型说：“查 10 月 10 日深圳到拉萨的中转，首程下午四点以后出发，换乘间隔一到四小时，只看同站换乘，最晚 12 日晚上十点到。”条件过严可能返回空方案，这不表示存在满足条件的列车。出发条件只用于首程，到达条件只用于末程；到达窗口不会单独扩展乘车日期。
+
+逐程席别与价格示例（**0.1.5 起**）：
+
+```json
+{
+  "date": "2026-10-10",
+  "from": "深圳",
+  "to": "拉萨",
+  "onlyAvailable": true,
+  "firstSeatType": "secondClass",
+  "secondSeatType": "hardSleeper",
+  "sortBy": "price",
+  "maxSeatCombinations": 5,
+  "maxResults": 10
+}
+```
+
+自然语言：“查深圳到拉萨的中转，第一程坐二等座、第二程坐硬卧，两程都要有票，按已知总票价从低到高排列。”不指定两个席别时，源码会比较不同有票席别的组合；排序不能保证未知票价方案更贵。
 
 ## Architecture
 

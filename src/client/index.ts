@@ -6,10 +6,11 @@ import { matchesTrain, matchesTransfer, resultLimit, ticketQueryDates, validateF
 import { parseTickets } from '../parser/ticket.js';
 import { parseTransfer } from '../parser/transfer.js';
 import { parseRoute } from '../parser/route.js';
+import { compareTransferRoutes, priceTransferRoute } from '../transfer-pricing.js';
 import { parseStationScript, stationScriptUrl } from '../stations/loader.js';
 import { StationResolver } from '../stations/resolver.js';
 import type { ResolvedStation } from '../stations/resolver.js';
-import type { TicketQuery, TicketResult, TransferQuery, TransferResult, RouteQuery, RouteResult, TransferRoute } from '../types.js';
+import type { TicketQuery, TicketResult, TransferQuery, TransferResult, RouteQuery, RouteResult, PricedTransferRoute } from '../types.js';
 import { HttpClient, QUERY_ORIGIN, queryPath } from './http.js';
 import type { Fetcher } from './http.js';
 import { requestTickets } from './tickets.js';
@@ -75,7 +76,8 @@ export class RailwayClient {
     const endpoint = await this.endpoint('transfer', signal);
     let truncated = false;
     // Keep only the best bounded candidate set while scanning the configured pages.
-    const best = new Map<string, TransferRoute>();
+    const best = new Map<string, PricedTransferRoute>();
+    const compare = (a: PricedTransferRoute, b: PricedTransferRoute) => compareTransferRoutes(a, b, args.sortBy);
     for (const date of dates) {
       let cursor = 0;
       const cursors = new Set<number>();
@@ -91,10 +93,10 @@ export class RailwayClient {
           const key = JSON.stringify([route.firstLeg.trainNo, route.firstLeg.fromTelecode, route.firstLeg.toTelecode, route.firstLeg.departureDate,
             route.secondLeg.trainNo, route.secondLeg.fromTelecode, route.secondLeg.toTelecode, route.secondLeg.departureDate]);
           if (best.has(key)) continue;
-          best.set(key, route);
+          best.set(key, priceTransferRoute(route, args));
           if (best.size > limit) {
             truncated = true;
-            const worst = [...best].sort((a, b) => a[1].totalDurationMinutes - b[1].totalDurationMinutes).at(-1)!;
+            const worst = [...best].sort((a, b) => compare(a[1], b[1])).at(-1)!;
             best.delete(worst[0]);
           }
         }
@@ -106,7 +108,7 @@ export class RailwayClient {
       }
     }
     const routes = [...best.values()];
-    routes.sort((a, b) => a.totalDurationMinutes - b.totalDurationMinutes);
+    routes.sort(compare);
     return { query: { date: args.date, from: args.from, to: args.to }, routes, truncated };
   }
   async trainRoute(args: RouteQuery, signal?: AbortSignal): Promise<RouteResult> {

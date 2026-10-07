@@ -2,9 +2,15 @@
 
 采用 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 的分组方式和 [Semantic Versioning](https://semver.org/)。0.1.3 是首次 GitHub Release 和 npm 发布；更早的版本为本地开发记录，未公开发行。
 
-## [Unreleased]
+## [0.1.5] - 2026-10-07
 
-暂无待发布条目。
+### Added
+
+- 中转新增 `firstSeatType`、`secondSeatType`，独立覆盖对应程的共同 `seatType`，兼容原有有票筛选语义。
+- 返回当前两程明确有票的席别组合、各程已知票价、人民币票价合计和最低已知合计；缺失价格保留 `null`，标记价格不完整。
+- 新增 `sortBy: "price"`，在有限分页内按最低已知组合总价选取路线，未知合计排后，同价按历时；默认仍按总历时。
+- 新增 `maxSeatCombinations`（1–20，默认 5），组合截断与路线分页截断分别标记；不新增外部补价请求。
+- 增加混合席别、共同席别回退、未知/冲突价格、金额精度、限长、后页低价选择及原生 ToolRuntime 回归测试。
 
 ## [0.1.4] - 2026-10-07
 

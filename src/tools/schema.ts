@@ -50,6 +50,25 @@ export const transferOutputSchema = {
           totalDurationMinutes: integer, transferStation: string, transferToStation: string,
           sameStation: { type: 'boolean', required: true }, transferMinutes: integer,
           firstLeg: { ...trainSchema, required: true }, secondLeg: { ...trainSchema, required: true },
+          pricing: {
+            type: 'object', additionalProperties: false, required: true,
+            properties: {
+              currency: { type: 'string', enum: ['CNY'], required: true }, lowestKnownPrice: nullableNumber,
+              incomplete: { type: 'boolean', required: true }, combinationCount: integer,
+              truncated: { type: 'boolean', required: true },
+              combinations: {
+                type: 'array', required: true,
+                items: {
+                  type: 'object', additionalProperties: false,
+                  properties: {
+                    firstSeatType: { type: 'string', enum: SEAT_TYPES, required: true },
+                    secondSeatType: { type: 'string', enum: SEAT_TYPES, required: true },
+                    firstPrice: nullableNumber, secondPrice: nullableNumber, totalPrice: nullableNumber,
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },

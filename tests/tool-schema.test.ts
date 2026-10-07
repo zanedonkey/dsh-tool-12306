@@ -7,6 +7,7 @@ import { ToolCallId } from '@deepseek-ai/dsh-llm';
 import * as Plugin from '../src/index.js';
 import { fixtureFetch, midnightFetch } from './helpers.js';
 import transfer from './fixtures/transfer.json' with { type: 'json' };
+import type { RawTransferRoute } from '../src/types.js';
 const contexts: Context[] = [];
 afterEach(async () => { for (const ctx of contexts.splice(0)) await ctx.fiber.dispose(); });
 async function setup() {
@@ -16,6 +17,38 @@ async function setup() {
   return ctx;
 }
 describe('real Harness ToolRuntime', () => {
+  it('accepts mixed-leg seat preferences, price sorting and bounded combinations through native schemas', async () => {
+    const ctx = await setup(); const original = fixtureFetch(); const fetcher = fixtureFetch();
+    fetcher.mockImplementation(async (input, init) => {
+      if (String(input).includes('/lcquery/query')) {
+        const raw = structuredClone(transfer); const route: RawTransferRoute = raw.data.middleList[0]!;
+        route.train_date = '2099-10-07'; route.middle_date = '2099-10-08';
+        route.fullList[0]!.yp_info = 'O004250001';
+        route.fullList[1]!.ze_num = '无'; route.fullList[1]!.yw_num = '有'; route.fullList[1]!.yp_info = '3008750001';
+        return new Response(JSON.stringify(raw));
+      }
+      return original(input, init);
+    });
+    vi.stubGlobal('fetch', fetcher); await ctx.plugin(Plugin, { requestIntervalMs: 100 });
+    const execute = (args: unknown) => ctx.tools.execute({ signal: new AbortController().signal, callId: ToolCallId('transfer-prices'), name: '12306_query_transfer', arguments: args });
+    const args = { date: '2099-10-07', from: '深圳', to: '拉萨', onlyAvailable: true, firstSeatType: 'secondClass', secondSeatType: 'hardSleeper', sortBy: 'price', maxSeatCombinations: 1 };
+    const result = await execute(args);
+    expect(result.isError).toBe(false);
+    if (result.isError) throw new Error(JSON.stringify(result.content));
+    expect(result.value).toMatchObject({ routes: [{ pricing: { currency: 'CNY', lowestKnownPrice: 130, incomplete: false, combinationCount: 1, truncated: false,
+      combinations: [{ firstSeatType: 'secondClass', secondSeatType: 'hardSleeper', firstPrice: 42.5, secondPrice: 87.5, totalPrice: 130 }] } }] });
+    expect(JSON.parse(result.content.filter(b => b.type === 'text').map(b => b.text).join(''))).toEqual(result.value);
+    const calls = fetcher.mock.calls.length;
+    for (const invalid of [{ firstSeatType: 'invalid' }, { sortBy: 'cheapest' }, { maxSeatCombinations: 0 }, { maxSeatCombinations: 21 }]) {
+      expect((await execute({ ...args, ...invalid })).isError).toBe(true);
+    }
+    expect(fetcher.mock.calls).toHaveLength(calls);
+    const schema = ctx.tools.schemas().find(tool => tool.name === '12306_query_transfer');
+    expect(schema?.parameters).toMatchObject({ properties: {
+      firstSeatType: { enum: expect.arrayContaining(['secondClass']) }, secondSeatType: { enum: expect.arrayContaining(['hardSleeper']) },
+      sortBy: { enum: ['duration', 'price'] }, maxSeatCombinations: { type: 'integer' },
+    } });
+  });
   it('exposes transfer filters and validates their execution with canonical output', async () => {
     const ctx = await setup(); const original = fixtureFetch();
     const fetcher = fixtureFetch();

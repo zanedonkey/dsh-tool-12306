@@ -44,6 +44,13 @@ export function validateFilters(args: TicketQuery | TransferQuery): void {
 }
 export function validateTransferFilters(args: TransferQuery): void {
   validateFilters(args);
+  for (const field of ['firstSeatType', 'secondSeatType'] as const) {
+    if (args[field] !== undefined && !SEAT_TYPES.includes(args[field])) throw new InvalidQueryError(`${field} 无法识别席别。`);
+  }
+  if (args.sortBy !== undefined && args.sortBy !== 'duration' && args.sortBy !== 'price') throw new InvalidQueryError('sortBy 仅支持 duration 或 price。');
+  if (args.maxSeatCombinations !== undefined && (!Number.isSafeInteger(args.maxSeatCombinations) || args.maxSeatCombinations < 1 || args.maxSeatCombinations > 20)) {
+    throw new InvalidQueryError('maxSeatCombinations 必须是 1 到 20 的整数。');
+  }
   for (const field of ['minTransferMinutes', 'maxTransferMinutes'] as const) {
     const value = args[field];
     if (value !== undefined && (!Number.isSafeInteger(value) || value < 0)) throw new InvalidQueryError(`${field} 必须是非负安全整数（分钟）。`);
@@ -53,10 +60,10 @@ export function validateTransferFilters(args: TransferQuery): void {
   }
   if (args.sameStationOnly !== undefined && typeof args.sameStationOnly !== 'boolean') throw new InvalidQueryError('sameStationOnly 必须是布尔值。');
 }
-function matchesSeatsAndType(train: Train, args: TicketQuery | TransferQuery): boolean {
+function matchesSeatsAndType(train: Train, args: TicketQuery | TransferQuery, seatType = args.seatType): boolean {
   if (args.trainTypes?.length && !args.trainTypes.some(type => train.trainCode.startsWith(type))) return false;
   if (args.onlyAvailable) {
-    if (args.seatType ? train.seats[args.seatType].available !== true : !Object.values(train.seats).some(seat => seat.available === true)) return false;
+    if (seatType ? train.seats[seatType].available !== true : !Object.values(train.seats).some(seat => seat.available === true)) return false;
   }
   return true;
 }
@@ -76,6 +83,7 @@ export function matchesTransfer(route: TransferRoute, args: TransferQuery): bool
   if (args.sameStationOnly && !route.sameStation) return false;
   if (args.minTransferMinutes !== undefined && route.transferMinutes < args.minTransferMinutes) return false;
   if (args.maxTransferMinutes !== undefined && route.transferMinutes > args.maxTransferMinutes) return false;
-  return matchesSeatsAndType(route.firstLeg, args) && matchesSeatsAndType(route.secondLeg, args)
+  return matchesSeatsAndType(route.firstLeg, args, args.firstSeatType ?? args.seatType)
+    && matchesSeatsAndType(route.secondLeg, args, args.secondSeatType ?? args.seatType)
     && matchesTimes(route.firstLeg, route.secondLeg, args);
 }

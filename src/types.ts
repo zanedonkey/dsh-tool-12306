@@ -51,6 +51,12 @@ export interface TransferQuery extends Query {
   sameStationOnly?: boolean;
   onlyAvailable?: boolean;
   seatType?: SeatType;
+  /** Per-leg preferences override the common seatType for that leg. */
+  firstSeatType?: SeatType;
+  secondSeatType?: SeatType;
+  sortBy?: 'duration' | 'price';
+  /** Number of available seat combinations returned per route, 1–20; default 5. */
+  maxSeatCombinations?: number;
   maxResults?: number;
 }
 export interface RouteQuery { trainCode: string; date?: string; from?: string; to?: string }
@@ -64,7 +70,26 @@ export interface TransferRoute {
   firstLeg: Train;
   secondLeg: Train;
 }
-export interface TransferResult { query: Query; routes: TransferRoute[]; truncated: boolean }
+export interface TransferSeatCombination {
+  firstSeatType: SeatType;
+  secondSeatType: SeatType;
+  firstPrice: number | null;
+  secondPrice: number | null;
+  totalPrice: number | null;
+}
+export interface TransferPricing {
+  currency: 'CNY';
+  /** Lowest fully known fare among eligible, currently available combinations. */
+  lowestKnownPrice: number | null;
+  /** True when any eligible combination has an unknown total, or none exist. */
+  incomplete: boolean;
+  combinationCount: number;
+  combinations: TransferSeatCombination[];
+  /** Only the combination list is limited, independently of route pagination. */
+  truncated: boolean;
+}
+export interface PricedTransferRoute extends TransferRoute { pricing: TransferPricing }
+export interface TransferResult { query: Query; routes: PricedTransferRoute[]; truncated: boolean }
 export interface RouteStation {
   stationName: string;
   arrivalTime: string | null;

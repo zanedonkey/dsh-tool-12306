@@ -1,6 +1,6 @@
 # Releasing
 
-这是人工维护的轻量发布流程，没有自动发布凭据。当前源码版本为 0.1.4，本次分发渠道为 [npm](https://www.npmjs.com/package/dsh-tool-12306)；现有 [v0.1.3 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.3) 是旧版安装包。后续每次发布仍需明确授权；执行下面的本地检查不会发布包。
+这是人工维护的轻量发布流程，没有自动发布凭据。当前源码版本为 0.1.5，分发渠道为 [npm](https://www.npmjs.com/package/dsh-tool-12306) 和对应 GitHub Release。后续每次发布仍需明确授权；执行下面的本地检查不会发布包。
 
 ## Local preparation
 

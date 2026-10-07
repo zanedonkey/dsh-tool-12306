@@ -38,8 +38,55 @@ function schedule(date: string, departure: string, id: string, wait = 60, sameSt
   if (sameStation) { second.from_station_telecode = first.to_station_telecode; second.from_station_name = first.to_station_name; }
   return raw;
 }
+function packedPrice(code: string, amount: number): string {
+  return code + String(Math.round(amount * 10)).padStart(5, '0') + '0001';
+}
 
 describe('transfer windows, connections and bounded selection', () => {
+  it('supports second class plus hard sleeper with independently overridden seat preferences', async () => {
+    const raw = schedule(base.date, '16:00', '1');
+    raw.fullList[0]!.yp_info = packedPrice('O', 42.5);
+    raw.fullList[1]!.ze_num = '无'; raw.fullList[1]!.yw_num = '有'; raw.fullList[1]!.yp_info = packedPrice('3', 87.5);
+    const { client, requests } = setup(() => page([raw]));
+    const common = await client.queryTransfer({ ...base, onlyAvailable: true, seatType: 'secondClass' });
+    expect(common.routes).toHaveLength(0);
+    const result = await client.queryTransfer({ ...base, onlyAvailable: true, seatType: 'firstClass', firstSeatType: 'secondClass', secondSeatType: 'hardSleeper', sortBy: 'price' });
+    expect(result.routes).toHaveLength(1);
+    expect(result.routes[0]?.pricing).toMatchObject({ currency: 'CNY', lowestKnownPrice: 130, incomplete: false, combinationCount: 1,
+      combinations: [{ firstSeatType: 'secondClass', secondSeatType: 'hardSleeper', firstPrice: 42.5, secondPrice: 87.5, totalPrice: 130 }] });
+    expect(requests()).toHaveLength(2);
+    expect((await client.queryTransfer({ ...base, onlyAvailable: true, firstSeatType: 'firstClass', secondSeatType: 'hardSleeper' })).routes).toHaveLength(0);
+  });
+  it('selects a cheaper later-page route before applying maxResults and keeps default duration sorting', async () => {
+    const fast = schedule(base.date, '16:00', '1');
+    const cheap = schedule(base.date, '16:00', '2', 180);
+    for (const leg of fast.fullList) leg.yp_info = packedPrice('O', 200);
+    for (const leg of cheap.fullList) leg.yp_info = packedPrice('O', 50);
+    const { client, requests } = setup(url => url.searchParams.get('result_index') === '0' ? page([fast], true) : page([cheap]));
+    const result = await client.queryTransfer({ ...base, onlyAvailable: true, sortBy: 'price', maxResults: 1 });
+    expect(result.routes[0]).toMatchObject({ firstLeg: { trainCode: 'G2' }, pricing: { lowestKnownPrice: 100 } });
+    expect(result.truncated).toBe(true); expect(requests()).toHaveLength(2);
+    const byDuration = await client.queryTransfer({ ...base, maxResults: 1 });
+    expect(byDuration.routes[0]?.firstLeg.trainCode).toBe('G1');
+  });
+  it('sorts unknown totals last, breaks price ties by duration and retains unknown-only routes', async () => {
+    const unknown = schedule(base.date, '16:00', '1', 0);
+    const knownSlow = schedule(base.date, '16:00', '2', 180);
+    const knownFast = schedule(base.date, '16:00', '3');
+    for (const leg of [...knownSlow.fullList, ...knownFast.fullList]) leg.yp_info = packedPrice('O', 0.1);
+    const { client } = setup(() => page([unknown, knownSlow, knownFast]));
+    const result = await client.queryTransfer({ ...base, sortBy: 'price', maxSeatCombinations: 1 });
+    expect(result.routes.map(route => [route.firstLeg.trainCode, route.pricing.lowestKnownPrice])).toEqual([['G3', 0.2], ['G2', 0.2], ['G1', null]]);
+    expect(result.routes[2]?.pricing.incomplete).toBe(true);
+    const unknownOnly = setup(() => page([unknown]));
+    expect((await unknownOnly.client.queryTransfer({ ...base, sortBy: 'price' })).routes[0]?.pricing.lowestKnownPrice).toBeNull();
+  });
+  it('preserves routes without requested-seat availability when onlyAvailable is omitted', async () => {
+    const { client } = setup();
+    const result = await client.queryTransfer({ ...base, firstSeatType: 'firstClass', secondSeatType: 'hardSleeper' });
+    expect(result.routes).toHaveLength(1);
+    expect(result.routes[0]?.pricing).toMatchObject({ lowestKnownPrice: null, combinationCount: 0, combinations: [] });
+  });
   it('applies departure only to the first leg and dated arrival only to the final leg', async () => {
     const { client, requests } = setup();
     const result = await client.queryTransfer({ ...base, departureAfter: '16:00', departureBefore: '16:00',
@@ -73,6 +120,9 @@ describe('transfer windows, connections and bounded selection', () => {
     { minTransferMinutes: 90, maxTransferMinutes: 60 }, { sameStationOnly: 'true' as unknown as boolean },
     { departureAfter: '24:00' }, { arrivalBefore: '2026-02-30T12:00' },
     { arrivalAfter: '2026-10-09T00:00', arrivalBefore: '2026-10-08T00:00' },
+    { firstSeatType: 'unknown' as TransferQuery['firstSeatType'] }, { secondSeatType: '' as TransferQuery['secondSeatType'] },
+    { sortBy: 'fastest' as TransferQuery['sortBy'] }, { maxSeatCombinations: 0 }, { maxSeatCombinations: 21 },
+    { maxSeatCombinations: 1.5 }, { maxSeatCombinations: Infinity },
   ])('rejects invalid filters before networking: %j', async filters => {
     const { client, fetcher } = setup();
     await expect(client.queryTransfer({ ...base, ...filters })).rejects.toThrow();
