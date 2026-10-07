@@ -37,6 +37,4 @@ dsh plugin --profile rail add dsh-tool-12306@0.1.5
 
 ## GitHub Release status
 
-v0.1.5 的安装包、校验文件和 [发布说明](RELEASE_NOTES_0.1.5.md) 已准备，但尚未创建 GitHub tag / Release。Windows Computer Use 因无法可靠识别浏览器网址而停止；npm 发布不依赖电脑控制，已独立完成。
-
-发布包中的 README 在准备阶段已填写计划的 v0.1.5 Release 下载链接；这些链接需要对应 Release 创建后才可用。目前安装请使用 npm。npm tarball 不可覆盖，GitHub README 已更新为实际发布状态；包的运行代码与已验证源码一致。
+npm 发布时 GitHub Release 尚未完成；之后经维护者授权，已公开 [v0.1.5 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.5)。其标签指向本页源码提交，两个渠道 tarball 逐字节一致，包内 README 的 Release 链接现已可用。详见 [RELEASE_0.1.5_ACCEPTANCE.md](RELEASE_0.1.5_ACCEPTANCE.md)。
