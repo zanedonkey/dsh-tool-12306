@@ -13,7 +13,7 @@ Native China Railway 12306 query tools for DeepSeek Harness.
 
 本项目不是 MCP Server，也不是自动购票或抢票工具。本项目为非官方开源项目，与中国铁路及 12306 官方无隶属或合作关系。
 
-当前版本为 **0.1.5**，包含中转时间窗口、换乘筛选、逐程席别组合、已知票价合计和按最低已知总价排序。可从 [npm](https://www.npmjs.com/package/dsh-tool-12306) 或 [GitHub v0.1.5 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.5) 安装。
+当前版本为 **0.1.5**，包含中转时间窗口、换乘筛选、逐程席别组合、已知票价合计和按最低已知总价排序。已发布到 [npm](https://www.npmjs.com/package/dsh-tool-12306)。GitHub v0.1.5 Release 的附件和说明已准备，尚未公开；当前请从 npm 安装。
 
 ## Features
 
@@ -57,12 +57,7 @@ dsh --profile rail web
 
 ### 下载预编译安装包
 
-从 [v0.1.5 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.5) 下载：
-
-- [dsh-tool-12306-0.1.5.tgz](https://github.com/zanedonkey/dsh-tool-12306/releases/download/v0.1.5/dsh-tool-12306-0.1.5.tgz)
-- [SHA-256 校验文件](https://github.com/zanedonkey/dsh-tool-12306/releases/download/v0.1.5/dsh-tool-12306-0.1.5.tgz.sha256)
-
-对照校验文件核对安装包的 SHA-256。桌面端打开“插件 → 添加插件”，输入下载的 `.tgz` 文件的本地完整路径，安装后点击“立即启用”。已安装旧版时，先卸载旧版，再安装新包。CLI 安装命令见下文。
+GitHub v0.1.5 Release 尚未公开，目前请使用 npm 安装或从源码构建。安装包、SHA-256 校验文件和发布说明已准备，详见 [发布验收记录](docs/NPM_0.1.5_ACCEPTANCE.md)。
 
 ### 从源码生成安装包
 

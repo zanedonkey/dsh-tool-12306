@@ -1,6 +1,6 @@
 # Releasing
 
-这是人工维护的轻量发布流程，没有自动发布凭据。当前源码版本为 0.1.5，分发渠道为 [npm](https://www.npmjs.com/package/dsh-tool-12306) 和对应 GitHub Release。后续每次发布仍需明确授权；执行下面的本地检查不会发布包。
+这是人工维护的轻量发布流程，没有自动发布凭据。当前源码版本为 0.1.5，已发布到 [npm](https://www.npmjs.com/package/dsh-tool-12306)，对应 GitHub Release 尚待上传。后续每次发布仍需明确授权；执行下面的本地检查不会发布包。
 
 ## Local preparation
 
@@ -44,6 +44,8 @@ GitHub Actions 已实际运行；[历史整理后 main 的工作流](https://git
 首次公开 Release 为 `v0.1.3`。后续发版通过所有检查、得到发布授权后，创建与版本号对应的 tag 和 GitHub Release，上传预编译 `.tgz` 和 SHA-256 文件。发布说明格式见 [RELEASE_NOTES.md](RELEASE_NOTES.md)。先以 draft 上传并核对附件，再公开发布；不要在安装包缺失时提前公开 Release。源码 tag、构建产物和校验文件必须对应同一次构建，同步 README 的安装状态和 CHANGELOG。
 
 ## npm publication — authorization required
+
+0.1.5 已由维护者授权发布，公开注册表 latest 指向 0.1.5；两套 SDK 从公共 npm 全新安装后的验证见 [NPM_0.1.5_ACCEPTANCE.md](NPM_0.1.5_ACCEPTANCE.md)。GitHub v0.1.5 Release 尚未公开。
 
 0.1.4 已由维护者授权手工发布到 npm，公开注册表 `latest` 指向 `0.1.4`；源码 CI 和两套 SDK 的发布后安装验证见 [NPM_0.1.4_ACCEPTANCE.md](NPM_0.1.4_ACCEPTANCE.md)。本次未创建新 GitHub Release。
 
