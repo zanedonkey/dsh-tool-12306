@@ -2,6 +2,13 @@
 
 采用 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 的分组方式和 [Semantic Versioning](https://semver.org/)。0.1.3 是首次 GitHub Release 和 npm 发布；更早的版本为本地开发记录，未公开发行。
 
+## [Unreleased]
+
+### Changed
+
+- 更新安全维护范围、中转分页限制和 0.1.5 兼容性验收入口。
+- 明确旧版审查、候选包和 npm 发布记录属于历史快照，修正 latest 与已发布包不可覆盖的说明。
+
 ## [0.1.5] - 2026-10-07
 
 ### Added

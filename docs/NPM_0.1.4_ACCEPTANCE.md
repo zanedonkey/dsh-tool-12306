@@ -1,6 +1,6 @@
 # npm 0.1.4 publication verification
 
-2026-10-07，经维护者明确授权，账号 `zanedonkey` 使用官方 npm CLI 手工发布 `dsh-tool-12306@0.1.4`。公开注册表已确认版本可下载，`latest` 指向 `0.1.4`。
+2026-10-07，经维护者明确授权，账号 `zanedonkey` 使用官方 npm CLI 手工发布 `dsh-tool-12306@0.1.4`。公开注册表已确认版本可下载，发布当时 `latest` 指向 `0.1.4`。
 
 - Package: https://www.npmjs.com/package/dsh-tool-12306
 - Tarball: https://registry.npmjs.org/dsh-tool-12306/-/dsh-tool-12306-0.1.4.tgz

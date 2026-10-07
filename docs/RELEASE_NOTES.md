@@ -1,5 +1,7 @@
 # v0.1.3
 
+本页为 0.1.3 发布说明的历史记录；当时的未发布状态、测试数量和候选包校验值不代表当前版本。当前安装见 [README](../README.md)，发行验收见 [RELEASE_0.1.5_ACCEPTANCE.md](RELEASE_0.1.5_ACCEPTANCE.md)。
+
 ## Highlights
 
 Native China Railway 12306 query tools for DeepSeek Harness. 首次公开发布提供直达车次/余票、两程中转和经停站查询；支持跨午夜出发及按真实日期筛选到达。无需 12306 登录，未使用 MCP Server。

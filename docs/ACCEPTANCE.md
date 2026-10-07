@@ -1,10 +1,10 @@
 # dsh-tool-12306 验收记录
 
-验证日期：2026-10-06，中国时区。以下为开发阶段的历史验收记录；本次发布前审查见 [OPEN_SOURCE_READINESS.md](OPEN_SOURCE_READINESS.md)。
+历史验证日期：2026-10-06，中国时区。本页保留 0.1.0–0.1.3 开发阶段的原始验收数据；当时发布前审查见 [OPEN_SOURCE_READINESS.md](OPEN_SOURCE_READINESS.md)。当前 0.1.5 已发布，最新安装与兼容性记录见 [COMPATIBILITY.md](COMPATIBILITY.md)、[npm 验收](NPM_0.1.5_ACCEPTANCE.md) 和 [GitHub Release 验收](RELEASE_0.1.5_ACCEPTANCE.md)。
 
-最新 `0.1.3` 修复跨午夜出发窗口和日期感知的到达筛选。rc.2 和 alpha 两套独立 SDK 的 strict build、lint、113 项离线测试均通过（13 个文件，较 0.1.2 新增 24 项）；真实 ToolRuntime/AgentLoop 覆盖一次工具调用跨两天，以及用户提供的 23:16 出发、次日 00:29 到达的 synthetic G9271 场景。到达 HH:mm 语义已调整，迁移规则见 README；不是 G9271 实时运行图验证。6 项官方匿名 HTTP 集成测试通过，其中新增跨午夜窗口实际发送 2026-10-07、2026-10-08 两个日期的查询，断言请求日期与返回边界，不假设此窗口一定有车。发行文件为 `dsh-tool-12306-0.1.3.tgz`。
+`0.1.3` 修复跨午夜出发窗口和日期感知的到达筛选。rc.2 和 alpha 两套独立 SDK 的 strict build、lint、113 项离线测试均通过（13 个文件，较 0.1.2 新增 24 项）；真实 ToolRuntime/AgentLoop 覆盖一次工具调用跨两天，以及用户提供的 23:16 出发、次日 00:29 到达的 synthetic G9271 场景。到达 HH:mm 语义已调整，迁移规则见 README；不是 G9271 实时运行图验证。6 项官方匿名 HTTP 集成测试通过，其中新增跨午夜窗口实际发送 2026-10-07、2026-10-08 两个日期的查询，断言请求日期与返回边界，不假设此窗口一定有车。发行文件为 `dsh-tool-12306-0.1.3.tgz`。
 
-最新 `0.1.2` 安全与稳定性加固：rc.2 与 alpha 两套独立 SDK 下的 strict build、lint、89 项离线测试全部通过。新增 22 项回归测试覆盖冷却、流大小、取消隔离、在途请求合并、有界队列及 Cookie 限制；5 项匿名官方 HTTP 集成测试再次通过，查询日期为 2026-10-07。发行文件为 `dsh-tool-12306-0.1.2.tgz`，安全边界见 [SECURITY.md](../SECURITY.md)。历史验收记录保留如下。
+`0.1.2` 安全与稳定性加固：rc.2 与 alpha 两套独立 SDK 下的 strict build、lint、89 项离线测试全部通过。新增 22 项回归测试覆盖冷却、流大小、取消隔离、在途请求合并、有界队列及 Cookie 限制；5 项匿名官方 HTTP 集成测试再次通过，查询日期为 2026-10-07。发行文件为 `dsh-tool-12306-0.1.2.tgz`，安全边界见 [SECURITY.md](../SECURITY.md)。历史验收记录保留如下。
 
 后续 `0.1.1` 修复桌面端 DSH `0.2.0-rc.2` 安装兼容性，并在 rc.2 与 alpha 两套独立 SDK 下分别通过完整构建、lint 和 67 项测试。使用新包 `dsh-tool-12306-0.1.1.tgz`，详见 [COMPATIBILITY.md](COMPATIBILITY.md)。以下初始验收记录同时保留 `0.1.0` 的开发依据。
 
@@ -47,4 +47,4 @@
 
 城市查询使用官方代表站语义，不做全部车站组合穷举。中转仅两程，分页达到上限时明确返回 truncated。官网未来运行图、维护或接口变更仍可能影响结果。
 
-上述 0.1.0 验证是开发历史。当前源码为 0.1.3，已公开上传到 [GitHub](https://github.com/zanedonkey/dsh-tool-12306)，[main 的云端 CI](https://github.com/zanedonkey/dsh-tool-12306/actions/runs/37433469955) 共 8 个任务通过，每个环境通过 113 项离线测试。GitHub Release 和 npm 发布尚未执行。当前候选安装包的独立安装验收见 [RELEASE_CANDIDATE.md](RELEASE_CANDIDATE.md)。
+上述 0.1.0 验证是开发历史。以下为 0.1.3 发布准备阶段的快照：当时源码为 0.1.3，已公开上传到 [GitHub](https://github.com/zanedonkey/dsh-tool-12306)，[main 的云端 CI](https://github.com/zanedonkey/dsh-tool-12306/actions/runs/37433469955) 共 8 个任务通过，每个环境通过 113 项离线测试。当时 GitHub Release 和 npm 发布尚未执行。该历史候选安装包的独立安装验收见 [RELEASE_CANDIDATE.md](RELEASE_CANDIDATE.md)。

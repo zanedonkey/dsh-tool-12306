@@ -1,5 +1,7 @@
 # Open Source Readiness Report
 
+本页为 0.1.3 上传前审查的历史记录；当时的未发布状态、测试数量和候选包校验值不代表当前版本。当前安装见 [README](../README.md)，发行验收见 [RELEASE_0.1.5_ACCEPTANCE.md](RELEASE_0.1.5_ACCEPTANCE.md)。
+
 审查日期：2026-10-06，Asia/Shanghai。源码版本：0.1.3。
 
 以下记录上传前的本地审查快照，包括当时的 Git 状态和待办；源码上传后的实际提交及云端 CI 以 GitHub 仓库和 Actions 为准。本文件不表示 Release 或 npm 已发布。

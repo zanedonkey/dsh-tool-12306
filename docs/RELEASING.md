@@ -27,9 +27,9 @@ npm pack --dry-run
 npm pack
 ```
 
-检查 tarball，并在独立消费环境验证真实 Harness Loader、三个工具和卸载。计算 SHA-256，生成与文件名匹配的校验文件。已有同版本旧安装包不可直接混用：文档/依赖调整后应重新打包并更新校验值。
+检查 tarball，并在独立消费环境验证真实 Harness Loader、三个工具和卸载。计算 SHA-256，生成与文件名匹配的校验文件。未发布候选包在文档/依赖调整后可以重新打包并更新校验值；已发布 npm 版本不可覆盖。需要把修订文档或代码分发给安装用户时，应使用新版本，不替换已发布 Release 附件。
 
-5. 检查 git status、git diff 和提交历史。源码已上传到 origin/main；后续修改使用正常提交，保持现有历史。检查新增文件和提交邮箱，继续使用 GitHub noreply 邮箱。发布候选的安装验收记录见 [RELEASE_CANDIDATE.md](RELEASE_CANDIDATE.md)。
+5. 检查 git status、git diff 和提交历史。源码已上传到 origin/main；后续修改使用正常提交，保持现有历史。检查新增文件和提交邮箱，继续使用 GitHub noreply 邮箱。当前发行包验收见 [RELEASE_0.1.5_ACCEPTANCE.md](RELEASE_0.1.5_ACCEPTANCE.md)；0.1.3 历史候选验收见 [RELEASE_CANDIDATE.md](RELEASE_CANDIDATE.md)。
 
 ## GitHub publication — authorization required
 
@@ -41,13 +41,13 @@ GitHub Actions 已实际运行；[历史整理后 main 的工作流](https://git
 
 ## Tag and Release — authorization required
 
-首次公开 Release 为 `v0.1.3`。当前最新为 [v0.1.5](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.5)，发行包、校验和及一次性发布任务的验收见 [RELEASE_0.1.5_ACCEPTANCE.md](RELEASE_0.1.5_ACCEPTANCE.md)。后续发版通过所有检查、得到发布授权后，创建与版本号对应的 tag 和 GitHub Release，上传预编译 `.tgz` 和 SHA-256 文件。发布说明格式见 [RELEASE_NOTES.md](RELEASE_NOTES.md)。先以 draft 上传并核对附件，再公开发布；不要在安装包缺失时提前公开 Release。源码 tag、构建产物和校验文件必须对应同一次构建，同步 README 的安装状态和 CHANGELOG。
+首次公开 Release 为 `v0.1.3`。当前最新为 [v0.1.5](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.5)，发行包、校验和及一次性发布任务的验收见 [RELEASE_0.1.5_ACCEPTANCE.md](RELEASE_0.1.5_ACCEPTANCE.md)。后续发版通过所有检查、得到发布授权后，创建与版本号对应的 tag 和 GitHub Release，上传预编译 `.tgz` 和 SHA-256 文件。发布说明格式参考 [0.1.5 发布说明](RELEASE_NOTES_0.1.5.md)；[RELEASE_NOTES.md](RELEASE_NOTES.md) 保留 0.1.3 历史说明。先以 draft 上传并核对附件，再公开发布；不要在安装包缺失时提前公开 Release。源码 tag、构建产物和校验文件必须对应同一次构建，同步 README 的安装状态和 CHANGELOG。
 
 ## npm publication — authorization required
 
 0.1.5 已由维护者授权发布，公开注册表 latest 指向 0.1.5；两套 SDK 从公共 npm 全新安装后的验证见 [NPM_0.1.5_ACCEPTANCE.md](NPM_0.1.5_ACCEPTANCE.md)。GitHub v0.1.5 Release 也已发布，附件与 npm tarball 相同；见 [RELEASE_0.1.5_ACCEPTANCE.md](RELEASE_0.1.5_ACCEPTANCE.md)。
 
-0.1.4 已由维护者授权手工发布到 npm，公开注册表 `latest` 指向 `0.1.4`；源码 CI 和两套 SDK 的发布后安装验证见 [NPM_0.1.4_ACCEPTANCE.md](NPM_0.1.4_ACCEPTANCE.md)。本次未创建新 GitHub Release。
+0.1.4 的历史发布由维护者授权手工完成，当时公开注册表 `latest` 指向 `0.1.4`；源码 CI 和两套 SDK 的发布后安装验证见 [NPM_0.1.4_ACCEPTANCE.md](NPM_0.1.4_ACCEPTANCE.md)。该次 0.1.4 发布未创建对应 GitHub Release。
 
 0.1.3 已由维护者授权手工发布到 npm，历史验证记录见 [NPM_RELEASE_ACCEPTANCE.md](NPM_RELEASE_ACCEPTANCE.md)。该版本 npm 包的编译文件与 GitHub Release 相同，README 和上游署名更新后分别打包，因此两个渠道的归档校验值不同；不要用 GitHub 的 SHA-256 校验文件核对 npm tarball，也不要覆盖已有 Release 附件。0.1.4 包含新的中转查询能力，与旧版 Release 内容不同；以 npm 注册表实际版本及 `dist-tags` 为准。
 

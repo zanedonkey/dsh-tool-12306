@@ -1,5 +1,7 @@
 # 0.1.3 release candidate acceptance
 
+本页为 0.1.3 候选包验收的历史记录；当时的未发布状态、测试数量和候选包校验值不代表当前版本。当前安装见 [README](../README.md)，发行验收见 [RELEASE_0.1.5_ACCEPTANCE.md](RELEASE_0.1.5_ACCEPTANCE.md)。
+
 验证日期：2026-10-06。候选包从公开 GitHub main 的全新 clone 构建，源码提交为 `89b9806b8c17754fd690f466bb43de0c441c1fb3`。本轮只更新发布文档，未改变业务代码、依赖、版本号或 npm 包内文件。
 
 ## Source and package checks

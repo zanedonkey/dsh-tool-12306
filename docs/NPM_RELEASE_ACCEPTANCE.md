@@ -1,6 +1,6 @@
 # npm 0.1.3 publication verification
 
-2026-10-06，经维护者明确授权，账号 `zanedonkey` 使用官方 npm CLI 手工发布 `dsh-tool-12306@0.1.3`。npm 注册表已确认版本存在，`latest` 指向 `0.1.3`。
+2026-10-06，经维护者明确授权，账号 `zanedonkey` 使用官方 npm CLI 手工发布 `dsh-tool-12306@0.1.3`。npm 注册表已确认版本存在，发布当时 `latest` 指向 `0.1.3`。
 
 - Package: https://www.npmjs.com/package/dsh-tool-12306
 - Tarball: https://registry.npmjs.org/dsh-tool-12306/-/dsh-tool-12306-0.1.3.tgz
