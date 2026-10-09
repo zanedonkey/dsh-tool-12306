@@ -99,11 +99,11 @@ describe('real Harness ToolRuntime', () => {
     const schema = ctx.tools.schemas().find(tool => tool.name === '12306_query_tickets');
     expect(schema?.parameters).toMatchObject({ properties: { arrivalBefore: { description: expect.stringContaining('YYYY-MM-DDTHH:mm') } } });
   });
-  it('registers exactly three model-visible tools and unregisters on unload', async () => {
+  it('registers query tools plus local diagnostics and unregisters on unload', async () => {
     const ctx = await setup(); const fiber = ctx.plugin(Plugin, { requestIntervalMs: 100 }); await fiber;
-    const names = ['12306_query_tickets', '12306_query_transfer', '12306_train_route'];
+    const names = ['12306_query_tickets', '12306_query_transfer', '12306_train_route', '12306_plugin_info'];
     expect(ctx.tools.schemas().map(tool => tool.name)).toEqual(names);
-    expect((await ctx.systemPrompt.assemble()).tools.map(tool => tool.name)).toEqual(names);
+    expect((await ctx.systemPrompt.assemble()).tools.map(tool => tool.name)).toEqual([...names].sort());
     expect(ctx.tools.schemas()[0]?.parameters.required).toEqual(['date', 'from', 'to']);
     await fiber.dispose(); expect(ctx.tools.schemas()).toEqual([]);
   });

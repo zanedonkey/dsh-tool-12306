@@ -2,6 +2,7 @@ import { defineTool } from '@deepseek-ai/dsh-tools';
 import type { RailwayClient } from '../client/index.js';
 import { executeQuery } from './execute.js';
 import { tripParameters, filterParameters, ticketOutputSchema } from './schema.js';
+import { renderTickets } from './render.js';
 export function queryTicketsTool(client: RailwayClient) {
   return defineTool({
     name: '12306_query_tickets',
@@ -13,7 +14,7 @@ export function queryTicketsTool(client: RailwayClient) {
       arrivalAfter: { type: 'string', description: '到达下限，HH:mm 或 YYYY-MM-DDTHH:mm，中国当地时间，含边界。仅 HH:mm 锚定乘车 date；比较列车实际 arrivalDate + arrivalTime，不按每日时钟循环。' },
       arrivalBefore: { type: 'string', description: '到达上限，HH:mm 或 YYYY-MM-DDTHH:mm，含边界。两个 HH:mm 且下限较晚时上限自动为次日；单独的 HH:mm 为 date 当天。次日凌晨 02:00 前到达请明确传次日日期，如 2026-10-08T02:00。' },
     },
-    output: { schema: ticketOutputSchema, render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }] },
+    output: { schema: ticketOutputSchema, render: renderTickets },
     async execute(args, exec) { return executeQuery(() => client.queryTickets(args, exec.signal)); },
   });
 }

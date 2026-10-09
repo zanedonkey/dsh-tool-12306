@@ -96,6 +96,7 @@ export const tripParameters = {
   to: { type: 'string', required: true, description: '到达城市或明确车站中文名，例如上海、上海虹桥。' },
 } as const;
 export const filterParameters = {
+  outputMode: { type: 'string', enum: ['full', 'compact'], description: '默认 full 保留完整输出；compact 精简提供给模型的文本，展示明确有票或指定席别，保留实际日期、换乘和完整 pricing。未展示的席别不代表无票；结构化结果仍完整。' },
   trainTypes: { type: 'array', items: { type: 'string', enum: TRAIN_TYPES }, description: '按车次首字母筛选：G/D/C/Z/T/K。G 与 C 分开，省略即所有车次。' },
   onlyAvailable: { type: 'boolean', description: '仅返回当前有票的车次；候补和未知票量不算有票。' },
   seatType: { type: 'string', enum: SEAT_TYPES, description: '与 onlyAvailable 一起使用指定席别；二等座为 secondClass。' },

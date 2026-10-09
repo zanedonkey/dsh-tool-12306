@@ -25,6 +25,8 @@ export interface Train {
 }
 export interface Query { date: string; from: string; to: string }
 export interface TicketQuery extends Query {
+  /** Only the model-facing text is compacted; canonical structured output stays complete. */
+  outputMode?: 'full' | 'compact';
   trainTypes?: TrainType[];
   /** HH:mm on date; after > before spans date evening through the next morning. */
   departureAfter?: string;
@@ -37,6 +39,7 @@ export interface TicketQuery extends Query {
   maxResults?: number;
 }
 export interface TransferQuery extends Query {
+  outputMode?: 'full' | 'compact';
   transferStation?: string;
   trainTypes?: TrainType[];
   /** First-leg departure window, HH:mm on date; reversed bounds span midnight. */

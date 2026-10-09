@@ -13,6 +13,7 @@ import type { ResolvedStation } from '../stations/resolver.js';
 import type { TicketQuery, TicketResult, TransferQuery, TransferResult, RouteQuery, RouteResult, PricedTransferRoute } from '../types.js';
 import { HttpClient, QUERY_ORIGIN, queryPath } from './http.js';
 import type { Fetcher } from './http.js';
+import { withQueryDeadline } from '../query-deadline.js';
 import { requestTickets } from './tickets.js';
 import { requestTransferPage } from './transfer.js';
 import { requestRoute } from './route.js';
@@ -51,6 +52,9 @@ export class RailwayClient {
     return endpoint;
   }
   async queryTickets(args: TicketQuery, signal?: AbortSignal): Promise<TicketResult> {
+    return withQueryDeadline(this.config.queryTimeoutMs, signal, querySignal => this.queryTicketsWithinDeadline(args, querySignal));
+  }
+  private async queryTicketsWithinDeadline(args: TicketQuery, signal: AbortSignal): Promise<TicketResult> {
     validateTravelDate(args.date, this.now()); validateFilters(args);
     const limit = resultLimit(args.maxResults, this.config.maxResults);
     const dates = ticketQueryDates(args);
@@ -67,6 +71,9 @@ export class RailwayClient {
     return { query: { date: args.date, from: args.from, to: args.to }, trains: trains.slice(0, limit) };
   }
   async queryTransfer(args: TransferQuery, signal?: AbortSignal): Promise<TransferResult> {
+    return withQueryDeadline(this.config.queryTimeoutMs, signal, querySignal => this.queryTransferWithinDeadline(args, querySignal));
+  }
+  private async queryTransferWithinDeadline(args: TransferQuery, signal: AbortSignal): Promise<TransferResult> {
     validateTravelDate(args.date, this.now()); validateTransferFilters(args);
     const limit = resultLimit(args.maxResults, this.config.maxResults);
     const dates = ticketQueryDates(args);
@@ -112,6 +119,9 @@ export class RailwayClient {
     return { query: { date: args.date, from: args.from, to: args.to }, routes, truncated };
   }
   async trainRoute(args: RouteQuery, signal?: AbortSignal): Promise<RouteResult> {
+    return withQueryDeadline(this.config.queryTimeoutMs, signal, querySignal => this.trainRouteWithinDeadline(args, querySignal));
+  }
+  private async trainRouteWithinDeadline(args: RouteQuery, signal: AbortSignal): Promise<RouteResult> {
     const date = args.date ?? chinaToday(this.now()); validateTravelDate(date, this.now());
     // The anonymous initialization is needed even if no station resolution is requested.
     await this.endpoint('tickets', signal);

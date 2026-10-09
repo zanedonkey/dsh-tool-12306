@@ -28,7 +28,7 @@ it('loads the compiled plugin via real Loader and YAML without module mocks', as
   await ctx.loader.create({ name: 'cordis:include', config: { path: pathToFileURL(path).href } });
   await ctx.loader.await();
   for (const entry of ctx.loader.entries()) await entry.fiber?.await();
-  expect(ctx.tools.schemas().map(tool => tool.name)).toEqual(['12306_query_tickets', '12306_query_transfer', '12306_train_route']);
+  expect(ctx.tools.schemas().map(tool => tool.name)).toEqual(['12306_query_tickets', '12306_query_transfer', '12306_train_route', '12306_plugin_info']);
   const rail = [...ctx.loader.entries()].find(entry => entry.options.id === 'rail');
   expect(rail).toBeDefined(); await rail?.fiber?.dispose(); expect(ctx.tools.schemas()).toEqual([]);
 });

@@ -1,6 +1,7 @@
 import Schema from '@deepseek-ai/schemastery';
 export interface Config {
   timeoutMs?: number;
+  queryTimeoutMs?: number;
   maxResults?: number;
   requestIntervalMs?: number;
   maxRetries?: number;
@@ -11,6 +12,7 @@ export interface Config {
 }
 export const Config: Schema<Config> = Schema.object({
   timeoutMs: Schema.number().min(100).max(120000).step(1).default(15000),
+  queryTimeoutMs: Schema.number().min(100).max(300000).step(1).default(60000),
   maxResults: Schema.number().min(1).max(100).step(1).default(20),
   requestIntervalMs: Schema.number().min(100).max(60000).step(1).default(1000),
   maxRetries: Schema.number().min(0).max(2).step(1).default(1),

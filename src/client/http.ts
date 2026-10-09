@@ -2,6 +2,7 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import type { RuntimeConfig } from '../config.js';
 import { ParseError, RailwayError, RateLimitedError, Upstream12306Error } from '../errors.js';
 import { AnonymousCookies } from './cookie.js';
+import { PLUGIN_VERSION } from '../version.js';
 export const QUERY_ORIGIN = 'https://kyfw.12306.cn';
 const OFFICIAL_ORIGINS = new Set([QUERY_ORIGIN, 'https://www.12306.cn', 'https://search.12306.cn']);
 export type Fetcher = typeof fetch;
@@ -93,7 +94,7 @@ export class HttpClient {
         const combined = AbortSignal.any([caller, timeout]);
         try {
           const headers: Record<string, string> = {
-            'User-Agent': 'dsh-tool-12306/0.1.3 (anonymous railway query)',
+            'User-Agent': `dsh-tool-12306/${PLUGIN_VERSION} (anonymous railway query)`,
             Accept: 'application/json, text/plain, text/html, */*',
             'Accept-Language': 'zh-CN,zh;q=0.9',
             Referer: `${QUERY_ORIGIN}/otn/leftTicket/init`,

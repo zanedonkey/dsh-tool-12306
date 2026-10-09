@@ -4,6 +4,7 @@ import type { Config } from './config.js';
 import { queryTicketsTool } from './tools/query-tickets.js';
 import { queryTransferTool } from './tools/query-transfer.js';
 import { trainRouteTool } from './tools/train-route.js';
+import { pluginInfoTool } from './tools/plugin-info.js';
 export { Config } from './config.js';
 export type * from './types.js';
 export const name = 'tool-12306';
@@ -14,4 +15,5 @@ export function apply(ctx: Context, config: Config = {}): void {
   ctx.tools.register(queryTicketsTool(client));
   ctx.tools.register(queryTransferTool(client));
   ctx.tools.register(trainRouteTool(client));
+  ctx.tools.register(pluginInfoTool(client));
 }

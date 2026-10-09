@@ -10,6 +10,7 @@ export class InvalidQueryError extends RailwayError {}
 export class Upstream12306Error extends RailwayError {}
 export class RateLimitedError extends Upstream12306Error {}
 export class ParseError extends RailwayError {}
+export class QueryTimeoutError extends RailwayError {}
 
 export function publicError(error: unknown): Error {
   if (error instanceof RailwayError || (error instanceof Error && error.name === 'AbortError')) return error;

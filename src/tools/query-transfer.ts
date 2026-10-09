@@ -3,6 +3,7 @@ import type { RailwayClient } from '../client/index.js';
 import { executeQuery } from './execute.js';
 import { tripParameters, filterParameters, transferOutputSchema } from './schema.js';
 import { SEAT_TYPES } from '../types.js';
+import { renderTransfer } from './render.js';
 export function queryTransferTool(client: RailwayClient) {
   return defineTool({
     name: '12306_query_transfer',
@@ -23,7 +24,7 @@ export function queryTransferTool(client: RailwayClient) {
       maxTransferMinutes: { type: 'integer', description: '最长换乘间隔（分钟），非负整数，含边界；不得小于 minTransferMinutes，省略不额外限制。' },
       sameStationOnly: { type: 'boolean', description: 'true 时只返回前程到达站代码与后程出发站代码相同的方案；默认 false，允许跨站换乘。' },
     },
-    output: { schema: transferOutputSchema, render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }] },
+    output: { schema: transferOutputSchema, render: renderTransfer },
     async execute(args, exec) { return executeQuery(() => client.queryTransfer(args, exec.signal)); },
   });
 }

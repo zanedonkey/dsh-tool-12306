@@ -1,10 +1,16 @@
 # 插件兼容性与历史修复
 
-## 当前版本 0.1.5
+## 当前版本 0.1.6
+
+0.1.6 新增版本诊断、精简模型输出和整次查询超时，在两套 SDK 的独立本地环境均通过 build、lint 和 165 项离线测试（Node 24.21.0）。真实 ToolRuntime 验证第四个本地诊断工具、完整 canonical 值与精简文本、参数校验及卸载；真实 Loader 验证编译产物加载。默认测试不访问真实 12306。打包预览包含新模块和根目录 package.json，不包含源码、测试、环境文件或 GitHub 配置。
+
+推荐安装 dsh-tool-12306@0.1.6。支持 SDK 0.2.0-rc.2 / Cordis 4.0.4，以及 SDK 0.2.1-alpha.1 / Cordis 4.0.5-alpha.1；未放宽 peer 范围。CI 覆盖 Ubuntu/Windows、Node 22/24 及两套 SDK，实际状态以仓库 Actions 为准。升级、安装和限制见 [0.1.6 发布说明](RELEASE_NOTES_0.1.6.md)。下方保留 0.1.5 的历史验收记录。
+
+## 0.1.5 发布记录
 
 推荐安装 `dsh-tool-12306@0.1.5` 或 [v0.1.5 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.5) 的预编译包。Node.js 要求 `^22.19.0 || >=24.0.0`，CI 验证 Node 22、24；Harness 只声明以下两套实际验证的 SDK。
 
-| Harness SDK | Cordis | 当前验证 |
+| Harness SDK | Cordis | 当时验证 |
 | --- | --- | --- |
 | `0.2.0-rc.2` | `4.0.4` | build、lint、154 项离线测试；公开安装包 17 次原生工具调用、Loader 加载、卸载和重载 |
 | `0.2.1-alpha.1` | `4.0.5-alpha.1` | build、lint、154 项离线测试；公开安装包 17 次原生工具调用、Loader 加载、卸载和重载 |

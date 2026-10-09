@@ -9,11 +9,11 @@ Native China Railway 12306 query tools for DeepSeek Harness.
 
 ## Overview
 
-为 DeepSeek Harness 提供中国铁路 12306 的直达车次、余票、中转换乘和经停站查询。以原生 Cordis 插件注册三个模型工具，返回结构化结果，无需额外启动服务。
+为 DeepSeek Harness 提供中国铁路 12306 的直达车次、余票、中转换乘和经停站查询。以原生 Cordis 插件注册查询工具，返回结构化结果，无需额外启动服务。
 
 本项目不是 MCP Server，也不是自动购票或抢票工具。本项目为非官方开源项目，与中国铁路及 12306 官方无隶属或合作关系。
 
-当前版本为 **0.1.5**，包含中转时间窗口、换乘筛选、逐程席别组合、已知票价合计和按最低已知总价排序。已发布到 [npm](https://www.npmjs.com/package/dsh-tool-12306) 和 [GitHub v0.1.5 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.5)，两处安装包内容一致。
+本版本为 **0.1.6**，新增运行版本诊断、可选精简输出和整次查询超时，保留中转席别组合及最低已知票价排序。安装渠道为 [npm](https://www.npmjs.com/package/dsh-tool-12306) 和 [GitHub v0.1.6 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.6)；GitHub Release 使用与 npm 相同的预编译包。
 
 ## Features
 
@@ -43,26 +43,26 @@ Native China Railway 12306 query tools for DeepSeek Harness.
 
 ### 从 npm 安装
 
-桌面端打开“插件 → 添加插件”，输入 `dsh-tool-12306@0.1.5`，安装后点击“立即启用”。已安装旧版时，先卸载旧版再安装新版本。
+桌面端打开“插件 → 添加插件”，输入 `dsh-tool-12306@0.1.6`，安装后点击“立即启用”。已安装旧版时，先卸载旧版再安装新版本；完全退出 Harness（包括托盘后台）后重开，再调用 `12306_plugin_info` 核对实际运行版本。
 
 CLI 使用已安装的兼容版本 `dsh`：
 
 ```sh
-dsh plugin --profile rail add dsh-tool-12306@0.1.5
+dsh plugin --profile rail add dsh-tool-12306@0.1.6
 dsh --profile rail --dump-config
 dsh --profile rail web
 ```
 
-如果只需要把包作为 Node.js 项目依赖安装，可以执行 `npm install dsh-tool-12306@0.1.5`；在 Harness 中启用工具请使用上面的插件安装流程。
+如果只需要把包作为 Node.js 项目依赖安装，可以执行 `npm install dsh-tool-12306@0.1.6`；在 Harness 中启用工具请使用上面的插件安装流程。
 
 ### 下载预编译安装包
 
-从 [v0.1.5 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.5) 下载：
+从 [v0.1.6 Release](https://github.com/zanedonkey/dsh-tool-12306/releases/tag/v0.1.6) 下载：
 
-- [dsh-tool-12306-0.1.5.tgz](https://github.com/zanedonkey/dsh-tool-12306/releases/download/v0.1.5/dsh-tool-12306-0.1.5.tgz)
-- [SHA-256 校验文件](https://github.com/zanedonkey/dsh-tool-12306/releases/download/v0.1.5/dsh-tool-12306-0.1.5.tgz.sha256)
+- [dsh-tool-12306-0.1.6.tgz](https://github.com/zanedonkey/dsh-tool-12306/releases/download/v0.1.6/dsh-tool-12306-0.1.6.tgz)
+- [SHA-256 校验文件](https://github.com/zanedonkey/dsh-tool-12306/releases/download/v0.1.6/dsh-tool-12306-0.1.6.tgz.sha256)
 
-核对安装包的 SHA-256 后，桌面端“插件 → 添加插件”输入下载包本地完整路径，安装后启用。旧版先卸载再安装。CLI 安装命令见下文；[发布验收记录](docs/RELEASE_0.1.5_ACCEPTANCE.md) 包含校验和兼容性信息。
+核对安装包的 SHA-256 后，桌面端“插件 → 添加插件”输入下载包本地完整路径，安装后启用。旧版先卸载再安装。CLI 安装命令见下文；[发布说明](docs/RELEASE_NOTES_0.1.6.md) 包含升级步骤和已验证兼容范围。
 
 ### 从源码生成安装包
 
@@ -77,12 +77,12 @@ npm test
 npm pack
 ```
 
-这会生成 `dsh-tool-12306-0.1.5.tgz`，包含编译后的 ESM 和 TypeScript 声明文件。桌面端按上面的本地路径方式安装；不要启用不兼容版本豁免。
+这会生成 `dsh-tool-12306-0.1.6.tgz`，包含编译后的 ESM 和 TypeScript 声明文件。桌面端按上面的本地路径方式安装；不要启用不兼容版本豁免。
 
 CLI：在安装包所在目录，用已经安装的兼容版本 `dsh` 执行：
 
 ```sh
-dsh plugin --profile rail add ./dsh-tool-12306-0.1.5.tgz
+dsh plugin --profile rail add ./dsh-tool-12306-0.1.6.tgz
 dsh --profile rail --dump-config
 dsh --profile rail web
 ```
@@ -126,6 +126,24 @@ dsh --profile rail web
 省略日期的中转/余票自然语言请求需由模型补全日期；经停工具可默认中国当天。指定日期应处于官方可查询范围内。
 
 ## Available Tools
+
+### 版本诊断、精简输出与整次查询超时（0.1.6 起）
+
+以下能力从 **0.1.6** 起支持，旧版 0.1.5 不包含。已有三个查询工具的名称、参数和默认完整输出保持兼容，新增第四个只读诊断工具。
+
+- `12306_plugin_info`：无需参数、不发送网络请求，返回当前已加载插件的版本、Node.js 版本、工具列表、能力标识及两种超时配置。不读取账号、凭据或本地路径；它不比较磁盘上的安装版本。若工具不存在，请检查加载位置并完全重启 Harness。更新后应同时核对 `version` 与 `capabilities`；0.1.6 的三项能力都应为 `true`。
+- `12306_query_tickets` 和 `12306_query_transfer` 新增 `outputMode: "compact"`，默认仍为 `"full"`。精简的是提供给模型的文本，原生结构化 `value` 仍完整。保留实际出发/到达日期时间、明确有票或指定席别及全部已返回的 `pricing`；省略内部车次号、站代码和其他席别。未展示的席别不能视为无票，未知价格仍为 `null`。经停结果已经简短，保持原有输出。
+- 插件配置 `queryTimeoutMs` 默认 60000 毫秒，覆盖一次直达、中转或经停查询的初始化、排队、限速等待、重试、所有分页与响应读取。到期取消剩余工作并返回明确错误，不以部分结果或空数组代替成功结果。原来的 `timeoutMs` 仍控制单次 HTTP 请求。
+
+可测试以下自然语言请求：
+
+```text
+查看当前 12306 插件实际运行版本和支持的能力。
+查明天北京到上海有二等座的高铁，最多 5 趟，使用 compact 输出。
+查明天深圳到拉萨的有票中转，每条最多展示 5 个席别组合，按价格排序，使用 compact 输出。
+```
+
+配置和边界见 [Configuration](docs/CONFIGURATION.md)。精简输出不会额外发送请求，也不改变有票筛选、排序、结果数量或组合数量。
 
 ### `12306_query_tickets`
 
