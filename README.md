@@ -1,8 +1,8 @@
 # dsh-tool-12306
 
-Native China Railway 12306 query tools for DeepSeek Harness.
+这是一个可以快速帮你查询车票的插件 最速铁路方案传说 黑色大肥鱼上的原生插件
 
-DeepSeek Harness 原生 12306 查询插件，支持车次、余票、中转和经停站查询。基于 [Joooook/12306-mcp](https://github.com/Joooook/12306-mcp) 的查询实现优化，不需要额外启动 MCP Server。
+DeepSeek Harness 原生 12306 查询插件，支持车次、余票、中转和经停站查询。基于 [Joooook/12306-mcp](https://github.com/Joooook/12306-mcp) 的查询实现优化，不需要额外启动 MCP Server。感谢大佬开源！
 
 ## 🚩Features
 
